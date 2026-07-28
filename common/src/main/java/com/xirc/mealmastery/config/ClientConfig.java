@@ -30,33 +30,48 @@ public final class ClientConfig {
     public Tooltips tooltips = new Tooltips();
     public Accessibility accessibility = new Accessibility();
 
+    @Comment("The journal screen, opened with the keybind (J by default).")
     public static final class Journal {
-        /** 0 means "follow the game's GUI scale". */
+        @Comment("0 follows the game's GUI scale. Range 0 - 6.")
         public int scale = 0;
+        @Comment({
+                "How an undiscovered dish is shown.",
+                "HIDDEN, SILHOUETTE, NAME_ONLY, INGREDIENT_HINTS or FULL_RECIPE."})
         public UnknownRecipeDisplay unknownDisplay = UnknownRecipeDisplay.SILHOUETTE;
-        /** Hides percentages, XP numbers and leaderboards without changing the data. */
+        @Comment("Hides percentages, XP numbers and leaderboards without changing the data.")
         public boolean cozyMode = false;
-        /** Surfaces missing dishes, per-mod completion and checklists. */
+        @Comment("Surfaces missing dishes, per-mod completion and checklists.")
         public boolean completionistMode = false;
+        @Comment("Which page the journal opens on.")
         public String defaultPage = "overview";
         public String favoriteSort = "alphabetical";
+        @Comment("Lines of recent activity on the overview. Range 0 - 32.")
         public int recentActivityLines = 6;
         public boolean showNewIndicator = true;
-        /** Star rating under food names. The bonuses apply either way. */
+        @Comment("Star rating under food names. The bonuses apply either way.")
         public boolean showStars = true;
-        /** The mini panel docked beside the Cooking Pot and other containers. */
+        @Comment({
+                "The compact stats panel docked beside a cooking screen.",
+                "CULINARY shows it beside cooking stations only, ALWAYS beside every",
+                "container, OFF never. It never appears beside the inventory or the",
+                "creative tabs whichever is set."})
         public SidePanel sidePanel = SidePanel.CULINARY;
     }
 
+    @Comment("The on-screen level bar. Off by default.")
     public static final class Hud {
-        /** Off by default: the HUD must not be permanently cluttered. */
+        @Comment("Off by default: the HUD must not be permanently cluttered.")
         public boolean enabled = false;
-        /** Show the level bar only briefly after XP is gained. */
+        @Comment("Show the bar only briefly after XP is gained.")
         public boolean onlyWhileActive = true;
+        @Comment("How long it stays up, in ticks. Range 20 - 1200.")
         public int visibleTicks = 60;
+        @Comment("TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT or BOTTOM_RIGHT.")
         public Anchor anchor = Anchor.TOP_LEFT;
+        @Comment("Pixels from that corner. Range -512 - 512.")
         public int offsetX = 4;
         public int offsetY = 4;
+        @Comment("Range 0.5 - 3.0.")
         public float scale = 1.0F;
         public boolean showPinnedRecipes = true;
 
@@ -65,7 +80,7 @@ public final class ClientConfig {
         }
     }
 
-    /** Each toast type is individually suppressible. */
+    @Comment("Toasts and popups. Each type is individually suppressible.")
     public static final class Notifications {
         public boolean discoveries = true;
         public boolean masteryRanks = true;
@@ -73,24 +88,26 @@ public final class ClientConfig {
         public boolean challenges = true;
         public boolean milestones = true;
         public boolean xpPopups = true;
-        /** Rapid gains are summed into one popup rather than spamming. */
+        @Comment("Rapid gains are summed into one popup rather than spamming.")
         public int xpPopupAggregationTicks = 30;
+        @Comment("Uses existing vanilla sounds; this mod adds none.")
         public boolean playSounds = true;
-        /** Toasts per second before further ones are dropped. */
+        @Comment("Toasts per second before further ones are dropped.")
         public int maxToastsPerSecond = 2;
     }
 
+    @Comment("What Meal Mastery adds to a food item's tooltip.")
     public static final class Tooltips {
         public boolean enabled = true;
-        /** Full detail only while the modifier is held. */
+        @Comment("Show full detail only while the modifier below is held.")
         public boolean requireModifier = true;
+        @Comment("SHIFT, CONTROL, ALT or NONE.")
         public Modifier modifier = Modifier.SHIFT;
         public boolean showMastery = true;
         public boolean showPreparedCount = true;
-        /**
-         * Off by default so AppleSkin and the nutrition mods keep ownership of
-         * that tooltip section.
-         */
+        @Comment({
+                "Off by default so AppleSkin and the nutrition mods keep ownership",
+                "of that tooltip section. Forced off while one is installed."})
         public boolean showNutrition = false;
 
         public enum Modifier {
@@ -98,11 +115,13 @@ public final class ClientConfig {
         }
     }
 
+    @Comment("Accessibility.")
     public static final class Accessibility {
-        /** Disables every journal transition. */
+        @Comment("Disables every journal transition.")
         public boolean reducedMotion = false;
+        @Comment("Range 0.1 - 3.0.")
         public float animationSpeed = 1.0F;
-        /** Draws rank pips as text as well as shapes, so rank is never colour-only. */
+        @Comment("Draws rank as text as well as shapes, so rank is never colour-only.")
         public boolean alwaysShowRankText = true;
         public boolean highContrast = false;
     }

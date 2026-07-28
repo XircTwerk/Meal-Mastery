@@ -1,16 +1,25 @@
 # Configuration
 
-Two JSON documents in the config directory:
+Two TOML documents in the config directory:
 
 ```
-config/mealmastery-server.json    server-authoritative, world behaviour
-config/mealmastery-client.json    client-only, purely presentation
+config/mealmastery-server.toml    server-authoritative, world behaviour
+config/mealmastery-client.toml    client-only, purely presentation
 ```
 
 Values outside a supported range are **clamped, not rejected** — a config typo
 must never cost anyone their world. Corrections are logged and written back. A
 file that cannot be parsed at all is renamed to `*.invalid` and replaced with
 defaults so the original is still recoverable.
+
+**Every setting is commented in the file itself**, including its range and the
+accepted values for anything enumerated, so the file is usually quicker to read
+than this page. It is rewritten on every load: new settings appear with their
+comments, and values you have already set are preserved.
+
+A `mealmastery-*.json` left over from before the format changed is read once,
+converted, and renamed to `.json.bak` — nothing you had tuned is lost, and the
+original is kept in case the conversion misreads something.
 
 Reload both with `/mealmastery reload`.
 
