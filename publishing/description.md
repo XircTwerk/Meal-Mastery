@@ -5,14 +5,16 @@ that turns cooking into progression. Every dish you prepare has its own mastery
 track, the food you cook is recorded in a culinary journal, and getting good at
 a recipe measurably changes what happens when you cook and eat it.
 
-It adds **no food, no items, no blocks, no in-game textures, no models and no
-sounds.** Everything it displays is built from vanilla GUI sprites and items
-other mods already registered. The only image it ships is its own mod-list
-icon.
+**It is not limited to Farmer's Delight's own food.** Dishes are detected
+generically from recipes, so every Farmer's Delight addon — Nether's Delight,
+End's Delight, Expanded Delight, More Delight and any addon released after this
+one — is picked up automatically. No compatibility pack, no hardcoded item list,
+no per-mod code. Vanilla recipes count too.
 
 | | |
 |---|---|
 | Requires | Farmer's Delight, Fabric API (Fabric builds only) |
+| Works with | any food addon that registers ordinary recipes, plus vanilla |
 | Minecraft | 1.20.1 (Fabric, Forge) · 1.21.1 (Fabric, NeoForge) |
 | Sides | Client and server — both are required |
 | New content added | none |
