@@ -6,7 +6,7 @@ This is the **1.21.1** branch (Fabric + NeoForge). For Minecraft 1.20.1
 (Fabric + Forge) see the [`1.20.1`](https://github.com/XircTwerk/Meal-Mastery/tree/1.20.1)
 branch. There is no `main` branch: each Minecraft version is its own branch.
 
-## [1.0.0] - 2026-07-28
+## [1.0] - 2026-07-28
 
 ### Ported to Minecraft 1.21.1
 - Replaced the `forge` module with `neoforge`: Farmer's Delight has no Forge
