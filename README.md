@@ -4,7 +4,7 @@
 
 Meal Mastery adds cooking progression, recipe mastery, discovery, statistics,
 challenges and a culinary journal to [Farmer's Delight](https://modrinth.com/mod/farmers-delight)
-— without adding a single food, block, item, model, texture or sound.
+— without adding a single food, block, item, model, in-game texture or sound.
 
 | | |
 |---|---|
