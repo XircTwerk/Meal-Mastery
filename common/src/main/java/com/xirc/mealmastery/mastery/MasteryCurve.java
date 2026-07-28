@@ -15,12 +15,13 @@ public final class MasteryCurve {
     /**
      * Preparations required for Novice, Familiar, Skilled, Expert, Mastered.
      *
-     * <p>One entry per rank above {@link MasteryRank#UNFAMILIAR}. The first
-     * preparation of a dish is worth a rank on its own, which is what makes the
-     * journal feel alive on a brand new world; the top rank is reachable
-     * through ordinary play rather than grinding.</p>
+     * <p>One entry per rank above {@link MasteryRank#UNFAMILIAR}. Twice the
+     * original curve: mastery carries real mechanical bonuses now, and reaching
+     * the top of a dish in twenty preparations made those arrive faster than
+     * they could be enjoyed. The second preparation still pays a rank, so a new
+     * world does not start out feeling inert.</p>
      */
-    public static final List<Integer> DEFAULT_THRESHOLDS = List.of(1, 10, 30, 75, 150);
+    public static final List<Integer> DEFAULT_THRESHOLDS = List.of(2, 20, 60, 150, 300);
 
     public static final MasteryCurve DEFAULT = new MasteryCurve(DEFAULT_THRESHOLDS);
 

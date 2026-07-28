@@ -13,30 +13,31 @@ class MasteryCurveTest {
     void defaultThresholdsMatchTheDocumentedProgression() {
         MasteryCurve curve = MasteryCurve.DEFAULT;
         assertEquals(MasteryRank.UNFAMILIAR, curve.rankFor(0));
-        assertEquals(MasteryRank.NOVICE, curve.rankFor(1));
-        assertEquals(MasteryRank.NOVICE, curve.rankFor(9));
-        assertEquals(MasteryRank.FAMILIAR, curve.rankFor(10));
-        assertEquals(MasteryRank.SKILLED, curve.rankFor(30));
-        assertEquals(MasteryRank.EXPERT, curve.rankFor(75));
-        assertEquals(MasteryRank.MASTERED, curve.rankFor(150));
+        assertEquals(MasteryRank.UNFAMILIAR, curve.rankFor(1));
+        assertEquals(MasteryRank.NOVICE, curve.rankFor(2));
+        assertEquals(MasteryRank.NOVICE, curve.rankFor(19));
+        assertEquals(MasteryRank.FAMILIAR, curve.rankFor(20));
+        assertEquals(MasteryRank.SKILLED, curve.rankFor(60));
+        assertEquals(MasteryRank.EXPERT, curve.rankFor(150));
+        assertEquals(MasteryRank.MASTERED, curve.rankFor(300));
     }
 
     @Test
     void masteryDoesNotRegressPastTheTopRank() {
         MasteryCurve curve = MasteryCurve.DEFAULT;
-        assertEquals(MasteryRank.MASTERED, curve.rankFor(150));
+        assertEquals(MasteryRank.MASTERED, curve.rankFor(300));
         assertEquals(MasteryRank.MASTERED, curve.rankFor(10_000));
-        // Mastery has to be worth the walk: 150 preparations, not 75.
+        // Mastery has to be worth the walk: 300 preparations, not 150.
         assertEquals(-1L, curve.pointsForNextRank(10_000));
     }
 
     @Test
     void progressIsMeasuredInsideTheCurrentRank() {
         MasteryCurve curve = MasteryCurve.DEFAULT;
-        // 20 points: Familiar starts at 10, Skilled at 30.
-        assertEquals(MasteryRank.FAMILIAR, curve.rankFor(20));
-        assertEquals(10L, curve.progressIntoRank(20));
-        assertEquals(20L, curve.pointsForNextRank(20));
+        // 40 points: Familiar starts at 20, Skilled at 60.
+        assertEquals(MasteryRank.FAMILIAR, curve.rankFor(40));
+        assertEquals(20L, curve.progressIntoRank(40));
+        assertEquals(40L, curve.pointsForNextRank(40));
     }
 
     @Test
@@ -53,9 +54,9 @@ class MasteryCurveTest {
     @Test
     void reconfiguringThresholdsOnlyChangesTheDisplayedRank() {
         // Changing configuration must never destroy earned points.
-        long earned = 40L;
+        long earned = 80L;
         assertEquals(MasteryRank.SKILLED, MasteryCurve.DEFAULT.rankFor(earned));
-        MasteryCurve stricter = new MasteryCurve(List.of(1, 10, 50, 200, 500, 1000));
+        MasteryCurve stricter = new MasteryCurve(List.of(1, 10, 100, 200, 500, 1000));
         assertEquals(MasteryRank.FAMILIAR, stricter.rankFor(earned));
     }
 }

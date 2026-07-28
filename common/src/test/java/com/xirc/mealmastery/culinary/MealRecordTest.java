@@ -74,7 +74,7 @@ class MealRecordTest {
     @Test
     void administrativelyLoweringMasteryAlsoLowersTheAnnouncedRank() {
         MealRecord record = new MealRecord(STEW);
-        record.addMasteryPoints(200L);
+        record.addMasteryPoints(400L);
         record.claimRankAnnouncement(record.rank(MasteryCurve.DEFAULT));
         assertEquals(MasteryRank.MASTERED, record.announcedRank());
 
