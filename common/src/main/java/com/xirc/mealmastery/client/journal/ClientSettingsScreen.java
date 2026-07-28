@@ -137,16 +137,18 @@ public final class ClientSettingsScreen extends Screen {
     }
 
     /**
-     * 1.21's {@code Screen#renderBackground} runs a blur post-effect over the
-     * world. {@code Screen#render} calls it internally, so suppressing the blur
-     * means overriding this hook — replacing the call inside {@code render} is
-     * not enough, because {@code super.render} reaches it anyway.
+     * Draws no backdrop at all: no dim, and no blur on the versions that have
+     * one.
      *
-     * <p>A plain dim backdrop is what vanilla's own container screens use.</p>
+     * <p>{@code Screen#render} calls this hook itself, so leaving it empty is
+     * what suppresses the default — changing what {@code render} calls is not
+     * enough, because {@code super.render} reaches this anyway. The journal
+     * draws its own panel, and dimming the world behind it only made the
+     * widgets look wrong by comparison: they render afterwards, so they stayed
+     * at full brightness while everything else went dark.</p>
      */
     @Override
     public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        renderTransparentBackground(graphics);
     }
 
     @Override

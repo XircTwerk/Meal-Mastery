@@ -90,7 +90,7 @@ data/<namespace>/mealmastery/collections/<name>.json
 data/<namespace>/mealmastery/milestones/<name>.json
 ```
 
-Fifteen objective types are available (cook a recipe, cook from a category or a
+Fourteen objective types are available (cook a recipe, cook from a category or a
 specific mod, use an ingredient or ingredient tag, use a cooking method, master
 a recipe, serve portions, reach a level, and so on). Rewards are limited to
 things that already exist — items, advancements, XP and cosmetic journal badges.
@@ -114,6 +114,12 @@ to food from mods that are not Farmer's Delight addons at all, as long as they
 register ordinary recipes producing ordinary food.
 
 Farmer's Delight itself is still required to install and run Meal Mastery.
+
+**Vanilla recipes count too, by default.** Bread, a baked potato and anything
+out of a smoker earn mastery on the same terms as a Farmer's Delight stew, and
+the journal lists them. A pack that wants the journal to be about its food
+addons only sets `compatibility.trackVanillaRecipes` to `false`, which turns off
+the whole `minecraft` namespace in one go and leaves every other mod untouched.
 
 `/mealmastery debug` reports what the mod thinks about the item in your hand,
 which is the fastest way to find out why a given addon's food is or is not in
