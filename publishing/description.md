@@ -143,17 +143,20 @@ progress bar.
 
 ## Configuration
 
-Two JSON files in the config directory:
+Two commented TOML files in the config directory:
 
 ```
 config/mealmastery-server.toml    world behaviour, server-authoritative
 config/mealmastery-client.toml    presentation only
 ```
 
-Both reload with `/mealmastery reload`. Out-of-range values are clamped and
-logged rather than rejected — a config typo must never cost anyone their world —
-and a file that cannot be parsed at all is renamed to `*.invalid` and replaced
-with defaults so the original stays recoverable.
+Every setting is commented in the file itself, including its range and accepted
+values. Both reload with `/mealmastery reload`. Out-of-range values are clamped
+and logged rather than rejected — a config typo must never cost anyone their
+world — and a file that cannot be parsed at all is renamed to `*.invalid` and
+replaced with defaults so the original stays recoverable. Configs from an
+earlier JSON build are migrated automatically, with the original kept as
+`*.json.bak`.
 
 Five presets (`Vanilla+`, `Cozy`, `Completionist`, `Server`, `Cosmetic`) are
 available as starting points. None is ever applied automatically, and applying
@@ -186,7 +189,7 @@ addons themselves.
 
 ## What it does not do
 
-- It does not add any food, item, block, texture, model or sound.
+- It does not add any food, item, block, in-game texture, model or sound.
 - It does not modify Farmer's Delight recipes or the stats of any food item.
 - It does not gate anything. No recipe, item or block becomes unavailable
   because of a Meal Mastery level.
