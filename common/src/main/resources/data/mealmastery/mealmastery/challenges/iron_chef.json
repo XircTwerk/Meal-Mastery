@@ -1,0 +1,7 @@
+{
+  "scope": "PERMANENT",
+  "objectives": [
+    { "type": "UNIQUE_RECIPES_IN_ONE_DAY", "amount": 10 }
+  ],
+  "rewards": { "cooking_xp": 200, "badge": "mealmastery:iron_chef" }
+}

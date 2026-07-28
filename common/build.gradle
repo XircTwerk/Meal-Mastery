@@ -1,0 +1,39 @@
+plugins {
+    // NeoForm gives plain Mojang-mapped Minecraft with no loader attached,
+    // which is exactly what a multiloader common module needs. VanillaGradle,
+    // used on the 1.20.1 branch, does not support 1.21.
+    id 'net.neoforged.moddev'
+}
+
+base {
+    archivesName = "${mod_id}-common-${minecraft_version}"
+}
+
+neoForge {
+    neoFormVersion = neoform_version
+
+    // The test source set needs Minecraft too: a handful of tests touch
+    // ResourceLocation and TagKey.
+    addModdingDependenciesTo sourceSets.test
+}
+
+dependencies {
+    // Farmer's Delight is intentionally absent. Meal Mastery discovers it (and
+    // every addon) through recipe types, registries and tags at runtime, so
+    // there is nothing to compile against. See docs/upstream-audit.md.
+    compileOnly 'com.google.code.gson:gson:2.10.1'
+
+    testImplementation 'com.google.code.gson:gson:2.10.1'
+    testImplementation platform("org.junit:junit-bom:${junit_version}")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.slf4j:slf4j-api:2.0.7'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'failed'
+        exceptionFormat 'full'
+    }
+}

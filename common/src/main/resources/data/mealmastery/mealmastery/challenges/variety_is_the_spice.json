@@ -1,0 +1,7 @@
+{
+  "scope": "PERMANENT",
+  "objectives": [
+    { "type": "PREPARE_VARIETY", "amount": 8 }
+  ],
+  "rewards": { "cooking_xp": 100 }
+}

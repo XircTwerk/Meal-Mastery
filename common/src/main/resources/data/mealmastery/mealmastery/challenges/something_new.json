@@ -1,0 +1,7 @@
+{
+  "scope": "PERMANENT",
+  "objectives": [
+    { "type": "COOK_RECIPE", "amount": 10, "unique": true }
+  ],
+  "rewards": { "cooking_xp": 150, "badge": "mealmastery:culinary_adventurer" }
+}

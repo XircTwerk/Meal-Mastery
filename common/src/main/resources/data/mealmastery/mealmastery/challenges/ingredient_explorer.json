@@ -1,0 +1,7 @@
+{
+  "scope": "PERMANENT",
+  "objectives": [
+    { "type": "DISCOVER_RECIPE", "amount": 25, "unique": true }
+  ],
+  "rewards": { "cooking_xp": 200, "badge": "mealmastery:ingredient_explorer" }
+}

@@ -1,0 +1,7 @@
+{
+  "scope": "PERMANENT",
+  "objectives": [
+    { "type": "USE_METHOD", "value": "farmersdelight:cutting", "amount": 50 }
+  ],
+  "rewards": { "cooking_xp": 120 }
+}

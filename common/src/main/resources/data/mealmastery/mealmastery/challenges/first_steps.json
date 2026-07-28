@@ -1,0 +1,7 @@
+{
+  "scope": "CHAIN",
+  "objectives": [
+    { "type": "COOK_RECIPE", "amount": 1 }
+  ],
+  "rewards": { "cooking_xp": 25 }
+}

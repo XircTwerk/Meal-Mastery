@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "mealmastery",
+  "version": "${version}",
+  "name": "Farmer's Delight: Meal Mastery",
+  "description": "Turns every meal you cook in Farmer's Delight into persistent culinary progression: mastery, discovery, journals, statistics and challenges.",
+  "authors": [
+    "xirc"
+  ],
+  "contact": {
+    "homepage": "https://github.com/XircTwerk/Meal-Mastery",
+    "sources": "https://github.com/XircTwerk/Meal-Mastery",
+    "issues": "https://github.com/XircTwerk/Meal-Mastery/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/mealmastery/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.xirc.mealmastery.fabric.MealMasteryFabric"
+    ],
+    "client": [
+      "com.xirc.mealmastery.fabric.MealMasteryFabricClient"
+    ]
+  },
+  "mixins": [
+    "mealmastery.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric-api": "*",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "farmersdelight": "${farmersdelight_fabric_version_range}"
+  }
+}

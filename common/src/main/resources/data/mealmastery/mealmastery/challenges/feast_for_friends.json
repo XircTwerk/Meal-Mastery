@@ -1,0 +1,7 @@
+{
+  "scope": "PERMANENT",
+  "objectives": [
+    { "type": "SERVE_PORTIONS", "amount": 8 }
+  ],
+  "rewards": { "cooking_xp": 120, "badge": "mealmastery:feast_master" }
+}

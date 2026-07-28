@@ -1,0 +1,9 @@
+{
+  "scope": "CHAIN",
+  "prerequisite": "mealmastery:first_steps",
+  "objectives": [
+    { "type": "COMPLETE_CHALLENGE", "value": "mealmastery:first_steps", "amount": 1 },
+    { "type": "COOK_RECIPE", "amount": 5, "unique": true }
+  ],
+  "rewards": { "cooking_xp": 75 }
+}

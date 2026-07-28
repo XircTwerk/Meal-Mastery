@@ -1,0 +1,51 @@
+plugins {
+    // Applied at the root so both ModDevGradle modules and IntelliJ's sync
+    // share one copy of each plugin. ModDevGradle is applied, not enabled, so
+    // :fabric can stay on Loom.
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.10'
+    id 'net.neoforged.moddev' version '2.0.95' apply false
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    group = mod_group
+    version = mod_version
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(java_version as int)
+        }
+        withSourcesJar()
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'Modrinth'
+            url = 'https://api.modrinth.com/maven'
+            content {
+                includeGroup 'maven.modrinth'
+            }
+        }
+        maven {
+            name = 'NeoForged'
+            url = 'https://maven.neoforged.net/releases/'
+        }
+        maven {
+            // Fabric ASM, which Farmer's Delight Refabricated bundles to extend
+            // the RecipeBookType enum. Development launches only; never on any
+            // compile path.
+            name = 'JitPack'
+            url = 'https://jitpack.io'
+            content {
+                includeGroup 'com.github.Chocohead'
+            }
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.compilerArgs += ['-Xlint:deprecation']
+    }
+}
