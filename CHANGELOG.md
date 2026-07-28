@@ -6,7 +6,7 @@ This is the **1.20.1** branch (Fabric + Forge). For Minecraft 1.21.1
 (Fabric + NeoForge) see the [`1.21.1`](https://github.com/XircTwerk/Meal-Mastery/tree/1.21.1)
 branch. There is no `main` branch: each Minecraft version is its own branch.
 
-## [1.0.0] - 2026-07-28
+## [1.0] - 2026-07-28
 
 ### Added
 - Multiloader project scaffold (Fabric + Forge + shared `common`) for Minecraft
@@ -33,8 +33,12 @@ branch. There is no `main` branch: each Minecraft version is its own branch.
 - Audit report backing `/mealmastery audit`.
 - Server and client configuration documents with range validation, plus the
   five optional presets (Vanilla+, Cozy, Completionist, Server, Cosmetic).
-  Defaults leave Farmer's Delight completely unchanged: cosmetic-only mastery
-  rewards, no automation credit, personal discovery, no leaderboards, no HUD.
+  Defaults never alter a Farmer's Delight recipe or a food item's own stats:
+  `mastery.rewards` is `COSMETIC_ONLY` (that setting shapes the XP side only),
+  no automation credit, personal discovery, no leaderboards, no HUD. Note that
+  `mastery.bonuses.enabled` *is* `true` by default, so mastery does affect
+  cooking speed, saturation and effects out of the box — see
+  `docs/configuration.md`.
 - Cooking attribution using three vanilla surfaces only: menu sessions,
   short interaction windows after using a workstation, and item drops inside
   those windows. Automation that cannot be attributed grants no credit.
