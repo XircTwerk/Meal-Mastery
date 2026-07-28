@@ -137,15 +137,18 @@ public final class ClientSettingsScreen extends Screen {
     }
 
     /**
-     * {@code Screen#render} calls {@code renderBackground} itself, so
-     * suppressing the default backdrop means overriding this hook rather than
-     * changing what {@code render} calls — {@code super.render} would reach it
-     * either way. 1.20.1 does not blur here, but keeping both branches on the
-     * same hook means the 1.21 fix cannot be lost in a future backport.
+     * Draws no backdrop at all: no dim, and no blur on the versions that have
+     * one.
+     *
+     * <p>{@code Screen#render} calls this hook itself, so leaving it empty is
+     * what suppresses the default — changing what {@code render} calls is not
+     * enough, because {@code super.render} reaches this anyway. The journal
+     * draws its own panel, and dimming the world behind it only made the
+     * widgets look wrong by comparison: they render afterwards, so they stayed
+     * at full brightness while everything else went dark.</p>
      */
     @Override
     public void renderBackground(GuiGraphics graphics) {
-        super.renderBackground(graphics);
     }
 
     @Override
