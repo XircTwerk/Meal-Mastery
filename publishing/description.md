@@ -145,8 +145,8 @@ progress bar.
 Two JSON files in the config directory:
 
 ```
-config/mealmastery-server.json    world behaviour, server-authoritative
-config/mealmastery-client.json    presentation only
+config/mealmastery-server.toml    world behaviour, server-authoritative
+config/mealmastery-client.toml    presentation only
 ```
 
 Both reload with `/mealmastery reload`. Out-of-range values are clamped and

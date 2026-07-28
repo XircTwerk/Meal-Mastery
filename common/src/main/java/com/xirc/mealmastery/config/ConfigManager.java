@@ -26,8 +26,29 @@ import java.util.List;
  * can be found and fixed.</p>
  */
 public final class ConfigManager {
-    private static final String SERVER_FILE = "mealmastery-server.json";
-    private static final String CLIENT_FILE = "mealmastery-client.json";
+    private static final String SERVER_FILE = "mealmastery-server.toml";
+    private static final String CLIENT_FILE = "mealmastery-client.toml";
+    private static final String LEGACY_SERVER_FILE = "mealmastery-server.json";
+    private static final String LEGACY_CLIENT_FILE = "mealmastery-client.json";
+
+    private static final List<String> SERVER_HEADER = List.of(
+            "Meal Mastery - server settings",
+            "",
+            "Authoritative on the server. In multiplayer only the server's copy",
+            "matters; a client's file cannot change progression.",
+            "",
+            "Values outside a supported range are clamped, not rejected - a typo",
+            "must never cost anyone their world. Corrections are written back and",
+            "named in the log. A file that cannot be parsed at all is renamed to",
+            "*.invalid and replaced with defaults, so the original is recoverable.",
+            "",
+            "Apply changes without a restart:  /mealmastery reload");
+
+    private static final List<String> CLIENT_HEADER = List.of(
+            "Meal Mastery - client settings",
+            "",
+            "Presentation only. Everything here is also reachable in game, from",
+            "the settings button on the journal screen.");
 
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
@@ -59,49 +80,49 @@ public final class ConfigManager {
         if (dir == null) {
             return;
         }
-        server = load(dir.resolve(SERVER_FILE), ServerConfig.class, ServerConfig::new,
-                ServerConfig::validate);
-        client = load(dir.resolve(CLIENT_FILE), ClientConfig.class, ClientConfig::new,
-                ClientConfig::validate);
+        server = load(dir.resolve(SERVER_FILE), dir.resolve(LEGACY_SERVER_FILE),
+                ServerConfig.class, ServerConfig::new, ServerConfig::validate, SERVER_HEADER);
+        client = load(dir.resolve(CLIENT_FILE), dir.resolve(LEGACY_CLIENT_FILE),
+                ClientConfig.class, ClientConfig::new, ClientConfig::validate, CLIENT_HEADER);
     }
 
     public static void saveServer(ServerConfig config) {
         config.validate();
         server = config;
-        write(SERVER_FILE, config);
+        write(SERVER_FILE, config, SERVER_HEADER);
     }
 
     public static void saveClient(ClientConfig config) {
         config.validate();
         client = config;
-        write(CLIENT_FILE, config);
+        write(CLIENT_FILE, config, CLIENT_HEADER);
     }
 
     private interface Validator<T> {
         List<String> validate(T config);
     }
 
-    private static <T> T load(Path file, Class<T> type, java.util.function.Supplier<T> factory,
-                              Validator<T> validator) {
+    private static <T> T load(Path file, Path legacy, Class<T> type,
+                              java.util.function.Supplier<T> factory,
+                              Validator<T> validator, List<String> header) {
         T config;
         if (!Files.exists(file)) {
-            config = factory.get();
+            // A JSON file from before the format changed is read once and
+            // rewritten as TOML, so nobody loses a tuned server by updating.
+            config = Files.exists(legacy) ? migrate(legacy, type, factory) : factory.get();
             validator.validate(config);
-            write(file, config);
+            write(file, config, header);
             return config;
         }
-        try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
-            config = GSON.fromJson(reader, type);
-            if (config == null) {
-                throw new JsonSyntaxException("file was empty");
-            }
+        try {
+            config = Toml.read(Files.readString(file, StandardCharsets.UTF_8), type);
         } catch (IOException | RuntimeException failure) {
             MealMasteryLog.LOGGER.error("Could not read {}; falling back to defaults.",
                     file.getFileName(), failure);
             quarantine(file);
             config = factory.get();
             validator.validate(config);
-            write(file, config);
+            write(file, config, header);
             return config;
         }
 
@@ -114,10 +135,39 @@ public final class ConfigManager {
         // Always write back, not only on a correction. A file written by an
         // older build is missing whatever sections have been added since, and
         // leaving it alone means the player silently runs new defaults they
-        // cannot see or edit. Rewriting adds the new keys and preserves every
-        // value they had already set.
-        write(file, config);
+        // cannot see or edit. Rewriting adds the new keys and the comments
+        // explaining them, and preserves every value they had already set.
+        write(file, config, header);
         return config;
+    }
+
+    /**
+     * Reads a pre-TOML JSON file, then renames it aside.
+     *
+     * <p>The old file is kept rather than deleted: if the conversion misreads
+     * something, the only copy of a server's tuning should not be gone.</p>
+     */
+    private static <T> T migrate(Path legacy, Class<T> type, java.util.function.Supplier<T> factory) {
+        try (Reader reader = Files.newBufferedReader(legacy, StandardCharsets.UTF_8)) {
+            T config = GSON.fromJson(reader, type);
+            if (config == null) {
+                throw new JsonSyntaxException("file was empty");
+            }
+            MealMasteryLog.LOGGER.info("Converted {} to TOML; the original was kept as {}.bak",
+                    legacy.getFileName(), legacy.getFileName());
+            return config;
+        } catch (IOException | RuntimeException failure) {
+            MealMasteryLog.LOGGER.error("Could not convert {}; starting from defaults.",
+                    legacy.getFileName(), failure);
+            return factory.get();
+        } finally {
+            try {
+                Files.move(legacy, legacy.resolveSibling(legacy.getFileName() + ".bak"),
+                        StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException failure) {
+                MealMasteryLog.LOGGER.warn("Could not rename {} aside", legacy.getFileName());
+            }
+        }
     }
 
     private static void quarantine(Path file) {
@@ -130,20 +180,20 @@ public final class ConfigManager {
         }
     }
 
-    private static void write(String fileName, Object config) {
+    private static void write(String fileName, Object config, List<String> header) {
         Path dir = directory;
         if (dir != null) {
-            write(dir.resolve(fileName), config);
+            write(dir.resolve(fileName), config, header);
         }
     }
 
-    private static void write(Path file, Object config) {
+    private static void write(Path file, Object config, List<String> header) {
         try {
             Files.createDirectories(file.getParent());
             try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
-                GSON.toJson(config, writer);
+                writer.write(Toml.write(config, header));
             }
-        } catch (IOException failure) {
+        } catch (IOException | RuntimeException failure) {
             MealMasteryLog.LOGGER.error("Could not write {}", file.getFileName(), failure);
         }
     }

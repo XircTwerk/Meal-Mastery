@@ -36,28 +36,37 @@ public final class ServerConfig {
     public Compatibility compatibility = new Compatibility();
     public Advanced advanced = new Advanced();
 
+    @Comment({
+            "Cooking XP and the level curve.",
+            "xpForLevel(n) = base + linear*(n-1) + quadratic*(n-1)^2"})
     public static final class Progression {
+        @Comment("Set false to stop awarding Cooking XP entirely.")
         public boolean enabled = true;
+        @Comment("Multiplies all Cooking XP. Range 0.0 - 100.0.")
         public double xpMultiplier = 1.0;
 
-        /** Base Cooking XP for preparing a dish that has been made before. */
+        @Comment("Cooking XP for preparing a dish that has been made before.")
         public int baseXpPerPreparation = 6;
-        /** Extra XP the first time a dish is ever prepared. */
+        @Comment({
+                "Extra XP the first time a dish is ever prepared.",
+                "Deliberately far larger than a repeat: exploring should beat grinding."})
         public int discoveryBonusXp = 75;
-        /** Extra XP the first time an ingredient is ever used. */
+        @Comment("Extra XP the first time an ingredient is ever used.")
         public int ingredientDiscoveryXp = 10;
-        /** Extra XP the first time a cooking method is ever used. */
+        @Comment("Extra XP the first time a cooking method is ever used.")
         public int methodDiscoveryXp = 25;
-        /** Extra XP for using an ingredient variant never used in that dish before. */
+        @Comment("Extra XP for an ingredient variant never used in that dish before.")
         public int experimentationXp = 8;
-        /** Cap on experimentation XP per Minecraft day, so variants cannot be farmed. */
+        @Comment("Cap on experimentation XP per Minecraft day, so variants cannot be farmed.")
         public int experimentationDailyCap = 60;
-        /** XP for personally eating a dish, kept far below preparing it. */
+        @Comment("XP for personally eating a dish. Kept far below preparing it.")
         public int baseXpPerMeal = 1;
 
+        @Comment("Level curve. With the defaults, level 27 costs 1,738 XP.")
         public int levelCurveBase = LevelCurve.DEFAULT_BASE;
         public int levelCurveLinear = LevelCurve.DEFAULT_LINEAR;
         public int levelCurveQuadratic = LevelCurve.DEFAULT_QUADRATIC;
+        @Comment("Levelling stops here. Earned XP past it is kept, not discarded.")
         public int maxLevel = LevelCurve.DEFAULT_MAX_LEVEL;
 
         public LevelCurve toCurve() {
@@ -72,22 +81,31 @@ public final class ServerConfig {
      * it must never become a punishment either — the floor multiplier keeps
      * repetition worth something.</p>
      */
+    @Comment({
+            "Diminishing returns for repeating the same dish.",
+            "Repetition should be worth less, never worthless."})
     public static final class AntiFarming {
+        @Comment("Set false to remove the curve entirely; every preparation pays full XP.")
         public boolean enabled = true;
-        /** Tracked per dish rather than globally, so variety is what resets it. */
+        @Comment("Track counts per dish rather than globally, so variety is what resets them.")
         public boolean perRecipe = true;
-        /** How many Minecraft days one tracking period covers. */
+        @Comment("How many Minecraft days one tracking period covers. Range 1 - 365.")
         public int trackingPeriodDays = 1;
-        /** Preparations per period that still earn full XP. */
+        @Comment("Preparations per period that still earn full XP.")
         public int fullXpPreparations = 1;
-        /** Multiplier tiers applied after the full-XP preparations are used up. */
-        public List<Tier> tiers = defaultTiers();
-        /** Never drop below this, no matter how many times a dish is repeated. */
+        @Comment("Never drop below this multiplier, however often a dish is repeated.")
         public double minimumMultiplier = 0.2;
 
+        @Comment({
+                "Multiplier tiers applied once the full-XP preparations are used up.",
+                "Each entry applies while the period count is at most upToPreparations.",
+                "Add or remove [[antiFarming.tiers]] blocks to reshape the curve."})
+        public List<Tier> tiers = defaultTiers();
+
         public static final class Tier {
-            /** Applies while the period count is at most this many. */
+            @Comment("Applies while the period count is at most this many.")
             public int upToPreparations;
+            @Comment("XP multiplier while this tier applies.")
             public double multiplier;
 
             public Tier() {
@@ -107,30 +125,38 @@ public final class ServerConfig {
         }
     }
 
+    @Comment("Per-dish mastery: the ranks, and what reaching them is worth.")
     public static final class Mastery {
+        @Comment("Set false to stop tracking mastery at all.")
         public boolean enabled = true;
+        @Comment("What mastery attaches to. ITEM or RECIPE.")
         public MasteryTarget target = MasteryTarget.ITEM;
+        @Comment({
+                "How mastery shapes Cooking XP. This is separate from mastery.bonuses,",
+                "which is what mastery does to the food itself.",
+                "COSMETIC_ONLY, LIGHT, STANDARD or CUSTOM."})
         public MasteryRewards rewards = MasteryRewards.COSMETIC_ONLY;
+        @Comment({
+                "Preparations needed for Novice, Familiar, Skilled, Expert, Mastered.",
+                "One entry per rank above Unfamiliar.",
+                "Changing these never destroys earned points; only the shown rank moves."})
         public List<Integer> thresholds = new ArrayList<>(MasteryCurve.DEFAULT_THRESHOLDS);
 
-        /** Mastery points granted per preparation. */
+        @Comment("Mastery points granted per preparation.")
         public int pointsPerPreparation = 1;
-        /** Points for personally eating the dish; off by default. */
+        @Comment("Points for personally eating the dish. Off by default.")
         public int pointsPerMeal = 0;
-        /** Points for serving a portion to someone else. */
+        @Comment("Points for serving a portion to someone else.")
         public int pointsPerServing = 1;
-        /** Extra points when the dish is made with its primary method. */
+        @Comment("Extra points when the dish is made with its primary method.")
         public int intendedMethodBonus = 0;
 
-        /**
-         * Cooking XP bonus per mastered dish, as a fraction. The safest reward
-         * shape: mastery improves progression rather than the food itself
-         *.
-         */
+        @Comment({
+                "Cooking XP bonus per mastered dish, as a fraction, and its ceiling.",
+                "The safest reward shape: mastery improves progression, not the food."})
         public double xpBonusPerMasteredDish = 0.005;
         public double xpBonusCap = 0.25;
 
-        /** The gameplay effects mastery has. On by default; amounts are tunable. */
         public Bonuses bonuses = new Bonuses();
 
         public MasteryCurve toCurve() {
@@ -146,149 +172,188 @@ public final class ServerConfig {
      * can dial them from "barely noticeable" to "absurd" without touching
      * anything else.</p>
      */
+    @Comment({
+            "What mastery does in play. These are real mechanical effects.",
+            "Every chance scales linearly from zero at Unfamiliar to the value",
+            "here at Mastered, so none of it applies to a first attempt.",
+            "The real odds for a dish are printed on its tooltip."})
     public static final class Bonuses {
+        @Comment("Set false for a statistics-only mod: no effect on food or cooking.")
         public boolean enabled = true;
 
-        /**
-         * Extra workstation ticks per second at full mastery, as a fraction.
-         * 1.0 means a mastered dish cooks twice as fast; the value scales
-         * linearly from zero at Unfamiliar.
-         */
+        @Comment({
+                "Extra workstation ticks at full mastery, as a fraction.",
+                "1.0 means a mastered dish cooks twice as fast. Range 0.0 - 20.0.",
+                "Applies to the cooking pot, skillet and stove, plus the smoker below."})
         public double cookingSpeedAtMaxRank = 1.0;
 
-        /**
-         * Whether the speed bonus reaches the vanilla smoker.
-         *
-         * <p>Separate from {@link #cookingSpeedAtMaxRank} because it is the one
-         * accelerated workstation that is not Farmer's Delight's, and a pack
-         * balanced around vanilla furnace timings may not want it touched.</p>
-         */
+        @Comment({
+                "Whether the speed bonus reaches the vanilla smoker.",
+                "Separate because it is the one accelerated station that is not",
+                "Farmer's Delight's; a pack balanced around furnace timings may",
+                "want it left alone."})
         public boolean accelerateSmokers = true;
 
-        /** Stars shown on food tooltips, one per mastery rank. */
+        @Comment("Stars shown under food names, one per mastery rank.")
         public boolean starsEnabled = true;
 
-        /** Chance of a bonus effect when eating, at full mastery. */
+        @Comment("Chance of a bonus effect when eating a mastered dish. Range 0.0 - 1.0.")
         public double effectChanceAtMaxRank = 0.25;
+        @Comment("How long that effect lasts. Range 1 - 3600.")
         public int effectDurationSeconds = 20;
-        /**
-         * Effects rolled from. Vanilla ids only: no custom effect is registered
-         * anywhere in this mod.
-         *
-         * <p>{@code minecraft:saturation} is deliberately absent. It is not a
-         * buff — it refills food and saturation every tick it runs, so even a
-         * short one turns any dish into a full meal several times over. A pack
-         * that wants that can add it back, but it should be a choice.</p>
-         */
+        @Comment({
+                "Effects rolled from. Vanilla ids only; this mod registers none.",
+                "",
+                "minecraft:saturation is deliberately absent. It is not a buff: it",
+                "refills food and saturation every tick it runs, so even a short one",
+                "turns any dish into several full meals. Add it back if you want",
+                "that, but it should be a choice."})
         public List<String> effects = new ArrayList<>(List.of(
                 "minecraft:regeneration",
                 "minecraft:speed",
                 "minecraft:dig_speed"));
-        /** Amplifier at full mastery; scales down with rank. Level I by default. */
+        @Comment("Amplifier at full mastery, scaled down by rank. 0 is level I. Range 0 - 9.")
         public int effectAmplifierAtMaxRank = 0;
 
-        /** Extra saturation points per rank when eating a dish you have mastered. */
+        @Comment({
+                "Extra saturation per star when eating a dish you have mastered.",
+                "Hunger itself is never touched."})
         public float saturationPerRank = 0.2F;
 
-        /** Chance at full mastery that a preparation comes out perfect. */
+        @Comment("Chance a preparation comes out perfect. Range 0.0 - 1.0.")
         public double perfectChanceAtMaxRank = 0.08;
-        /** How much stronger a perfect dish is than its star rating alone. */
+        @Comment("How much stronger a perfect dish is than its star rating alone.")
         public double perfectEffectMultiplier = 2.0;
 
-        /** Chance at full mastery of an extra portion from the same ingredients. */
+        @Comment("Chance of a free extra portion from the same ingredients.")
         public double extraPortionChanceAtMaxRank = 0.12;
 
-        /** Chance at full method familiarity of refunding a point of tool durability. */
+        @Comment("Chance a cutting-board cook refunds a point of knife durability.")
         public double toolRefundChanceAtMaxTier = 0.25;
 
-        /** Mastery points the cook earns when someone else eats their cooking. */
+        @Comment("Mastery points the cook earns when someone else eats their cooking.")
         public int masteryPerMealServedToOthers = 2;
     }
 
+    @Comment("When a dish stops being a mystery in the journal.")
     public static final class Discovery {
+        @Comment({
+                "COOK_RECIPE, EAT_OUTPUT, OBTAIN_OUTPUT, VIEW_RECIPE or ALWAYS_VISIBLE."})
         public DiscoveryMode mode = DiscoveryMode.COOK_RECIPE;
-        /** Dishes the player already has in a recipe book are still undiscovered here. */
+        @Comment("Whether merely obtaining a dish counts as discovering it.")
         public boolean countObtainingAsDiscovery = false;
+        @Comment("Who shares a discovery. PERSONAL, TEAM or SERVER.")
         public SharedDiscovery shared = SharedDiscovery.PERSONAL;
     }
 
+    @Comment("Cooking streaks.")
     public static final class Streaks {
+        @Comment("MINECRAFT_DAYS, REAL_DAYS or DISABLED.")
         public StreakClock clock = StreakClock.MINECRAFT_DAYS;
-        /** Idle days tolerated before a cooking streak resets. */
+        @Comment("Idle days forgiven before a streak resets. Range 1 - 365.")
         public int graceDays = 1;
+        @Comment("Track a separate streak for cooking something different each day.")
         public boolean varietyStreakEnabled = true;
     }
 
+    @Comment({
+            "Challenges. Objectives are generated from what is installed,",
+            "so a challenge is never impossible to complete."})
     public static final class Challenges {
         public boolean enabled = true;
         public boolean dailyEnabled = true;
         public boolean weeklyEnabled = false;
-        /** Real-time scheduling defaults off. */
+        @Comment("Schedule against the real-world clock instead of Minecraft days.")
         public boolean useRealTimeSchedule = false;
+        @Comment("How many are offered at once. Range 0 - 20.")
         public int dailyChallengeCount = 3;
         public int weeklyChallengeCount = 3;
+        @Comment("Rotate a bonus dish each Minecraft day.")
         public boolean recipeOfTheDayEnabled = true;
         public int recipeOfTheDayBonusXp = 50;
         public double challengeXpMultiplier = 1.0;
-        /** Data-driven rewards may run commands; off unless a pack opts in. */
+        @Comment({
+                "Datapack rewards may run commands. Off unless a pack is trusted:",
+                "a reward command runs with server authority."})
         public boolean allowCommandRewards = false;
     }
 
+    @Comment("Leaderboards and the permission levels for the admin commands.")
     public static final class Multiplayer {
-        /** Leaderboards are opt-in; the mod is not competitive by default. */
+        @Comment("Off by default: the mod is not competitive unless a server wants it.")
         public boolean leaderboardsEnabled = false;
+        @Comment({
+                "Players appear only after opting in, by carrying the scoreboard tag:",
+                "  tag @s add mealmastery_leaderboard"})
         public boolean leaderboardsOptInOnly = true;
+        @Comment("How many places a leaderboard shows. Range 1 - 100.")
         public int leaderboardSize = 10;
         public boolean teamStatisticsEnabled = false;
-        /** Inspecting another player's profile requires this permission level. */
+        @Comment("Permission level to inspect another player's profile. Range 0 - 4.")
         public int inspectPermissionLevel = 2;
+        @Comment("Permission level for /mealmastery reload and the admin commands.")
         public int adminPermissionLevel = 2;
     }
 
+    @Comment("Who gets the credit when a machine does the cooking.")
     public static final class Automation {
+        @Comment("NO_CREDIT, OWNER_CREDIT, REDUCED_CREDIT or FULL_CREDIT.")
         public AutomationCredit credit = AutomationCredit.NO_CREDIT;
+        @Comment("Multiplier used by REDUCED_CREDIT.")
         public double reducedCreditMultiplier = 0.25;
-        /**
-         * How long after a player interacts with a workstation their culinary
-         * gains are still attributed to them, in ticks. Short on purpose:
-         * anything longer starts crediting coincidences.
-         */
+        @Comment({
+                "How long after using a workstation a gain is still credited, in ticks.",
+                "Short on purpose: longer windows start crediting coincidences.",
+                "Range 1 - 200."})
         public int attributionWindowTicks = 20;
-        /** Radius, in blocks, for crediting items dropped by a workstation. */
+        @Comment("How close to the workstation a dropped item still counts, in blocks.")
         public double attributionRadius = 3.0;
     }
 
+    @Comment({
+            "Which recipes become journal entries.",
+            "The default rule is structural - a recipe counts when it produces",
+            "something edible, whichever mod defines it. These narrow or widen it."})
     public static final class Compatibility {
-        /** Extra block ids treated as cooking workstations, for addons with their own. */
+        @Comment({
+                "Extra blocks treated as cooking workstations, for addons with their own.",
+                "\"modid:block\" or \"modid:block=modid:method\"."})
         public List<String> extraWorkstationBlocks = new ArrayList<>();
-        /** Menu classes never treated as culinary, on top of the built-in storage list. */
+        @Comment("Menu classes never treated as culinary, on top of the built-in list.")
         public List<String> excludedMenuClasses = new ArrayList<>();
+        @Comment("Recipe type ids to ignore, e.g. \"farmersdelight:cutting\".")
         public List<String> excludedRecipeTypes = new ArrayList<>();
+        @Comment("Dish item ids to ignore.")
         public List<String> excludedItems = new ArrayList<>();
+        @Comment("Mod ids to ignore entirely.")
         public List<String> excludedMods = new ArrayList<>();
+        @Comment("When not empty, only these mods contribute dishes.")
         public List<String> includedOnlyMods = new ArrayList<>();
+        @Comment("A dish must carry one of these item tags to count.")
         public List<String> requiredItemTags = new ArrayList<>();
+        @Comment("Set false to accept recipes whose output is not food.")
         public boolean requireEdibleOutput = true;
-        /**
-         * Whether vanilla recipes earn mastery.
-         *
-         * <p>On by default: bread and a baked potato are cooking too, and a
-         * pack that wants the journal to be about its food addons only can
-         * turn the whole {@code minecraft} namespace off here rather than
-         * listing every vanilla dish by hand.</p>
-         */
+        @Comment({
+                "Whether vanilla recipes earn mastery.",
+                "On by default: bread and a baked potato are cooking too. Set false",
+                "to turn the whole minecraft namespace off in one go, for a pack",
+                "that wants the journal to be about its food addons."})
         public boolean trackVanillaRecipes = true;
     }
 
+    @Comment("Knobs you should not need. Change them if a profile is misbehaving.")
     public static final class Advanced {
+        @Comment("Verbose logging for tracking and attribution.")
         public boolean debugLogging = false;
-        /** Milliseconds between profile autosaves. */
+        @Comment("Milliseconds between profile autosaves. Range 5000 - 3600000.")
         public int autosaveIntervalMillis = 60_000;
-        /** Recent-activity entries retained per profile. */
+        @Comment("Recent-activity entries retained per profile. Range 1 - 64.")
         public int activityHistorySize = 32;
-        /** Maximum dishes a player may pin at once. */
+        @Comment("How many dishes a player may pin at once. Range 1 - 16.")
         public int maxPinnedRecipes = 3;
-        /** Journal entries sent per network page, keeping packets well under the limit. */
+        @Comment({
+                "Journal entries sent per network packet. Range 8 - 256.",
+                "Lower this only if a very large modpack trips the packet size limit."})
         public int journalPageSize = 64;
     }
 
