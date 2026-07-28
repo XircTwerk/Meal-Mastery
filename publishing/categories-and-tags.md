@@ -6,19 +6,30 @@ Project type: **Mods** (Minecraft: Java Edition).
 
 Primary category:
 
-- **Food** — the closest fit; this is where Farmer's Delight and every Delight
-  addon lives, so it is where people looking for one will browse.
+- **Addons → Farmer's Delight** (id `10754`) — CurseForge has a dedicated
+  Farmer's Delight addon subcategory. It is a more precise fit than *Food* and
+  it is the list people browse when they already run Farmer's Delight and are
+  looking for things that extend it.
 
 Secondary categories:
 
+- **Food** — the general bucket Farmer's Delight itself sits in; worth having
+  so the mod also surfaces for people who are not filtering by addon.
 - **Adventure and RPG** — progression, levels, challenges.
-- **Miscellaneous** — catch-all; optional, only if you want a third.
 
 Do not select **API and Library**. The mod exposes a public API but is not a
 library, and it explicitly refuses to become a mandatory dependency.
 
 Do not select **Armor, Tools, and Weapons**, **World Gen**, **Magic** or
 **Technology** — nothing in the mod touches any of them.
+
+Other project settings:
+
+| Field | Value |
+|---|---|
+| Project License | MIT License |
+| Allow distribution outside CurseForge-Overwolf | **Allow** — MIT already grants this, so refusing would contradict the licence |
+| Primary language | enUS (English) |
 
 ## Modrinth
 
