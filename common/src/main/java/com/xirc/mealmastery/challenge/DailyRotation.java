@@ -115,7 +115,7 @@ public final class DailyRotation {
         List<CookingMethod> methods = new ArrayList<>(registry.methods());
         List<ResourceLocation> categories = new ArrayList<>(registry.categories());
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath("mealmastery",
+        ResourceLocation id = new ResourceLocation("mealmastery",
                 "daily/" + day + "_" + index);
         ChallengeObjective objective;
 

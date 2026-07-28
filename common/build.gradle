@@ -1,20 +1,24 @@
 plugins {
-    // NeoForm gives plain Mojang-mapped Minecraft with no loader attached,
-    // which is exactly what a multiloader common module needs. VanillaGradle,
-    // used on the 1.20.1 branch, does not support 1.21.
-    id 'net.neoforged.moddev'
+    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
 }
 
 base {
     archivesName = "${mod_id}-common-${minecraft_version}"
 }
 
-neoForge {
-    neoFormVersion = neoform_version
+minecraft {
+    version(minecraft_version)
+}
 
-    // The test source set needs Minecraft too: a handful of tests touch
-    // ResourceLocation and TagKey.
-    addModdingDependenciesTo sourceSets.test
+repositories {
+    maven {
+        name = 'Sponge'
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+    }
+    maven {
+        name = 'Forge'
+        url = 'https://maven.minecraftforge.net/'
+    }
 }
 
 dependencies {

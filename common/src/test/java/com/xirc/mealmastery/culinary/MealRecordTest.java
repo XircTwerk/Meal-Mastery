@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MealRecordTest {
-    private static final ResourceLocation STEW = ResourceLocation.fromNamespaceAndPath("farmersdelight", "beef_stew");
-    private static final ResourceLocation ONION = ResourceLocation.fromNamespaceAndPath("farmersdelight", "onion");
+    private static final ResourceLocation STEW = new ResourceLocation("farmersdelight", "beef_stew");
+    private static final ResourceLocation ONION = new ResourceLocation("farmersdelight", "onion");
 
     @Test
     void perDayCountsResetWithTheDay() {

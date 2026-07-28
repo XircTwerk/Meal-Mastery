@@ -44,8 +44,8 @@ public final class VillagerFoodTrades {
                 return null;
             }
             int wanted = 4 + random.nextInt(5);
-            return new MerchantOffer(
-                    new net.minecraft.world.item.trading.ItemCost(item, wanted),
+            // 1.21 replaced this constructor's raw stacks with ItemCost.
+            return new MerchantOffer(new ItemStack(item, wanted),
                     new ItemStack(Items.EMERALD, 1),
                     8, 3, 0.05F);
         };

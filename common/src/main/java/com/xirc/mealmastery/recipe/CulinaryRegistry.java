@@ -4,11 +4,10 @@ import com.xirc.mealmastery.MealMasteryLog;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -154,7 +153,7 @@ public final class CulinaryRegistry {
      * @param rules          eligibility configuration
      * @param dishCategories category definitions, most specific first
      */
-    public static CulinaryRegistry build(Collection<RecipeHolder<?>> recipes,
+    public static CulinaryRegistry build(Collection<? extends Recipe<?>> recipes,
                                          RegistryAccess registryAccess,
                                          EligibilityRules rules,
                                          List<FoodCategory> dishCategories) {
@@ -166,7 +165,7 @@ public final class CulinaryRegistry {
         Map<EligibilityRules.Verdict, Integer> verdictCounts = new EnumMap<>(EligibilityRules.Verdict.class);
         int failed = 0;
 
-        for (RecipeHolder<?> recipe : recipes) {
+        for (Recipe<?> recipe : recipes) {
             RecipeClassifier.Classification classification = classifier.classify(recipe);
             if (classification.failed()) {
                 failed++;
@@ -200,8 +199,7 @@ public final class CulinaryRegistry {
             }
 
             ItemStack stack = new ItemStack(item);
-            // 1.21 moved food data into an item component.
-            FoodProperties food = stack.get(DataComponents.FOOD);
+            FoodProperties food = item.getFoodProperties();
 
             FoodCategory category = categorise(stack, dishCategories);
             if (category == FoodCategory.UNCATEGORISED) {
@@ -219,8 +217,8 @@ public final class CulinaryRegistry {
                     methods,
                     ingredients,
                     category,
-                    food == null ? 0 : food.nutrition(),
-                    food == null ? 0.0F : food.saturation()));
+                    food == null ? 0 : food.getNutrition(),
+                    food == null ? 0.0F : food.getSaturationModifier()));
         });
 
         // Alphabetical by id keeps the journal, the audit and the exported

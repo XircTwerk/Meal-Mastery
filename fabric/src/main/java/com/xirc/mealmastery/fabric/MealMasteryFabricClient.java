@@ -42,7 +42,7 @@ public final class MealMasteryFabricClient implements ClientModInitializer {
 
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> MealMasteryHud.render(graphics));
 
-        ItemTooltipCallback.EVENT.register((stack, context, type, lines) ->
+        ItemTooltipCallback.EVENT.register((stack, context, lines) ->
                 MasteryTooltip.append(stack, lines));
 
         // The stats panel docks beside any container screen, so it is attached

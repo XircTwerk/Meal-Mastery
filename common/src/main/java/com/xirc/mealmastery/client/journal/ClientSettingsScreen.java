@@ -137,16 +137,15 @@ public final class ClientSettingsScreen extends Screen {
     }
 
     /**
-     * 1.21's {@code Screen#renderBackground} runs a blur post-effect over the
-     * world. {@code Screen#render} calls it internally, so suppressing the blur
-     * means overriding this hook — replacing the call inside {@code render} is
-     * not enough, because {@code super.render} reaches it anyway.
-     *
-     * <p>A plain dim backdrop is what vanilla's own container screens use.</p>
+     * {@code Screen#render} calls {@code renderBackground} itself, so
+     * suppressing the default backdrop means overriding this hook rather than
+     * changing what {@code render} calls — {@code super.render} would reach it
+     * either way. 1.20.1 does not blur here, but keeping both branches on the
+     * same hook means the 1.21 fix cannot be lost in a future backport.
      */
     @Override
-    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        renderTransparentBackground(graphics);
+    public void renderBackground(GuiGraphics graphics) {
+        super.renderBackground(graphics);
     }
 
     @Override

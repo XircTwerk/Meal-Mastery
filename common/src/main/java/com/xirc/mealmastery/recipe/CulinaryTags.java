@@ -11,21 +11,21 @@ import net.minecraft.world.level.block.Block;
  * referencing anyone's code.
  *
  * <p>Every tag here is optional. A tag that no installed mod populates simply
- * matches nothing, so the same constant list works on both loaders. On 1.21
- * that is easy: the {@code forge:} namespace is gone and NeoForge and Fabric
- * both populate the {@code c:} conventional tags, as the audit of the two
- * Farmer's Delight builds confirmed.</p>
+ * matches nothing, which is why the same constant list works whether Farmer's
+ * Delight, its Forge {@code forge:} tags or the Fabric port's {@code c:} tags
+ * are the ones present — the audit found the Fabric build ships both
+ * namespaces, the Forge build only {@code forge:}.</p>
  */
 public final class CulinaryTags {
     private CulinaryTags() {
     }
 
     public static TagKey<Item> item(String namespace, String path) {
-        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(namespace, path));
+        return TagKey.create(Registries.ITEM, new ResourceLocation(namespace, path));
     }
 
     public static TagKey<Block> block(String namespace, String path) {
-        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(namespace, path));
+        return TagKey.create(Registries.BLOCK, new ResourceLocation(namespace, path));
     }
 
     // ---- dish classification (Farmer's Delight ships all of these) --------

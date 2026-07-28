@@ -21,11 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CulinaryProfileTest {
     private static final UUID PLAYER = UUID.fromString("00000000-0000-0000-0000-0000000000aa");
     private static final ResourceLocation ROAST_CHICKEN =
-            ResourceLocation.fromNamespaceAndPath("farmersdelight", "roast_chicken");
+            new ResourceLocation("farmersdelight", "roast_chicken");
     private static final ResourceLocation BEEF_STEW =
-            ResourceLocation.fromNamespaceAndPath("farmersdelight", "beef_stew");
+            new ResourceLocation("farmersdelight", "beef_stew");
     private static final ResourceLocation ONION =
-            ResourceLocation.fromNamespaceAndPath("farmersdelight", "onion");
+            new ResourceLocation("farmersdelight", "onion");
 
     private static CulinaryProfile populated() {
         CulinaryProfile profile = new CulinaryProfile(PLAYER);

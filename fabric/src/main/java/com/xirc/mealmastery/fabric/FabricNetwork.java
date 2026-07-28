@@ -2,17 +2,15 @@ package com.xirc.mealmastery.fabric;
 
 import com.xirc.mealmastery.network.MealMasteryPacket;
 import com.xirc.mealmastery.network.Network;
-import com.xirc.mealmastery.network.PacketEnvelope;
 import com.xirc.mealmastery.network.ServerPacketHandler;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
- * Fabric transport.
- *
- * <p>One registered payload type carries every packet; see
- * {@link PacketEnvelope}.</p>
+ * Fabric transport: one custom payload channel per packet id.
  */
 public final class FabricNetwork implements Network.Transport {
 
@@ -20,24 +18,29 @@ public final class FabricNetwork implements Network.Transport {
     }
 
     public static void registerServer() {
-        // Both directions have to be registered before either side can send.
-        PayloadTypeRegistry.playS2C().register(PacketEnvelope.TYPE, PacketEnvelope.CODEC);
-        PayloadTypeRegistry.playC2S().register(PacketEnvelope.TYPE, PacketEnvelope.CODEC);
-
-        ServerPlayNetworking.registerGlobalReceiver(PacketEnvelope.TYPE, (envelope, context) -> {
-            // The handler already runs on the server thread in 1.21.
-            MealMasteryPacket packet = envelope.unwrap();
-            if (packet != null) {
-                ServerPacketHandler.handle(context.player(), packet);
-            }
-        });
         Network.useTransport(new FabricNetwork());
+        for (ResourceLocation id : Network.packetIds()) {
+            ServerPlayNetworking.registerGlobalReceiver(id,
+                    (server, player, handler, buffer, responseSender) -> {
+                        // Decode off-thread, act on-thread: packet handlers may
+                        // touch profiles and the registry.
+                        FriendlyByteBuf copy = PacketByteBufs.copy(buffer);
+                        server.execute(() -> {
+                            MealMasteryPacket packet = Network.decode(id, copy);
+                            if (packet != null) {
+                                ServerPacketHandler.handle(player, packet);
+                            }
+                        });
+                    });
+        }
         ServerPacketHandler.install();
     }
 
     @Override
     public void toPlayer(ServerPlayer player, MealMasteryPacket packet) {
-        ServerPlayNetworking.send(player, PacketEnvelope.of(packet));
+        FriendlyByteBuf buffer = PacketByteBufs.create();
+        packet.write(buffer);
+        ServerPlayNetworking.send(player, packet.id(), buffer);
     }
 
     @Override

@@ -151,7 +151,7 @@ public final class CookingRewards {
 
     /** Isolated: 1.21 renamed this to isSameItemSameComponents. */
     private static boolean sameStamp(ItemStack left, ItemStack right) {
-        return ItemStack.isSameItemSameComponents(left, right);
+        return ItemStack.isSameItemSameTags(left, right);
     }
 
     /** A practised cook occasionally gets more out of the same ingredients. */

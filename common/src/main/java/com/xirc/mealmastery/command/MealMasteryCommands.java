@@ -339,8 +339,7 @@ public final class MealMasteryCommands {
         MealEntry entry = CulinaryRegistries.current().entry(itemId);
 
         text(source, "Held item", String.valueOf(itemId));
-        text(source, "Edible", String.valueOf(
-                held.has(net.minecraft.core.component.DataComponents.FOOD)));
+        text(source, "Edible", String.valueOf(held.isEdible()));
         text(source, "Tracked", String.valueOf(entry != null));
         if (entry == null) {
             return 1;

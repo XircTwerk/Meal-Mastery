@@ -81,7 +81,7 @@ public record Milestone(ResourceLocation id, Type type, long threshold, Resource
     }
 
     private static Milestone builtIn(String path, Type type, long threshold) {
-        return new Milestone(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path), type, threshold, null);
+        return new Milestone(new ResourceLocation(Constants.MOD_ID, path), type, threshold, null);
     }
 
     /** Shipped as data under {@code data/mealmastery/mealmastery/milestones}; mirrored here for tests. */

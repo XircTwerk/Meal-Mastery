@@ -44,7 +44,7 @@ public record CulinaryTitle(ResourceLocation id, Requirement requirement, long a
     }
 
     private static CulinaryTitle title(String path, Requirement requirement, long amount) {
-        return new CulinaryTitle(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path), requirement, amount);
+        return new CulinaryTitle(new ResourceLocation(Constants.MOD_ID, path), requirement, amount);
     }
 
     public static List<CulinaryTitle> builtIns() {

@@ -5,18 +5,18 @@
 **Meal Mastery does not compile against Farmer's Delight.**
 
 Farmer's Delight ships as two distributions with incompatible version numbers
-(NeoForge `1.3.2`, Fabric `3.3.3+refabricated`) and different internals, and the
+(Forge `1.3.2`, Fabric `2.4.1+refabricated`) and different internals, and the
 whole selling point of the mod is that *any* sensible food addon works with no
 integration code. So the mod talks exclusively to vanilla:
 
 | Needs | Obtained from |
 |---|---|
 | Recipe types | `BuiltInRegistries.RECIPE_TYPE` by `ResourceLocation` |
-| Recipes | `RecipeManager` + `RecipeHolder<?>` and the `Recipe<?>` interface |
+| Recipes | `RecipeManager` + the `Recipe<?>` interface |
 | Ingredients | `Recipe#getIngredients` → `Ingredient#getItems` |
 | Outputs | `Recipe#getResultItem(RegistryAccess)` |
-| Food data | the vanilla `DataComponents.FOOD` component |
-| Categories | item/block `TagKey`s under `farmersdelight:` and `c:` |
+| Food data | `Item#getFoodProperties` |
+| Categories | item/block `TagKey`s under `farmersdelight:`, `forge:` and `c:` |
 | Source mod | the namespace of the recipe/item `ResourceLocation` |
 | Effects | `BuiltInRegistries.MOB_EFFECT` by `ResourceLocation` |
 
@@ -28,13 +28,10 @@ literally the same code path. Nothing is keyed on a mod id.
 ```
 common/     loader-neutral: everything except loader hooks and packet transport
 fabric/     Fabric entry points, Fabric API callbacks, one narrow mixin
-neoforge/   NeoForge entry points, NeoForge event-bus subscribers
+forge/      Forge entry points, Forge event-bus subscribers
 ```
 
-Farmer's Delight has no Forge build for 1.21.1, so this branch targets NeoForge
-and Fabric.
-
-`fabric` and `neoforge` compile `common`'s sources directly into their own jars
+`fabric` and `forge` compile `common`'s sources directly into their own jars
 (`compileJava { source(project(':common')...) }`), which is why `common` may
 only depend on vanilla Minecraft.
 

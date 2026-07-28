@@ -2,10 +2,13 @@ package com.xirc.mealmastery.fabric;
 
 import com.xirc.mealmastery.client.ClientPacketHandler;
 import com.xirc.mealmastery.network.MealMasteryPacket;
-import com.xirc.mealmastery.network.PacketEnvelope;
+import com.xirc.mealmastery.network.Network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Client half of the Fabric transport. Kept separate so the dedicated server
@@ -18,18 +21,26 @@ public final class FabricClientNetwork {
     }
 
     public static void register() {
-        ClientPlayNetworking.registerGlobalReceiver(PacketEnvelope.TYPE, (envelope, context) -> {
-            MealMasteryPacket packet = envelope.unwrap();
-            if (packet != null) {
-                ClientPacketHandler.handle(packet);
-            }
-        });
+        for (ResourceLocation id : Network.packetIds()) {
+            ClientPlayNetworking.registerGlobalReceiver(id,
+                    (client, handler, buffer, responseSender) -> {
+                        FriendlyByteBuf copy = PacketByteBufs.copy(buffer);
+                        client.execute(() -> {
+                            MealMasteryPacket packet = Network.decode(id, copy);
+                            if (packet != null) {
+                                ClientPacketHandler.handle(packet);
+                            }
+                        });
+                    });
+        }
     }
 
     static void sendToServer(MealMasteryPacket packet) {
-        // A vanilla server, or one without Meal Mastery, will not accept this.
-        if (ClientPlayNetworking.canSend(PacketEnvelope.TYPE)) {
-            ClientPlayNetworking.send(PacketEnvelope.of(packet));
+        if (!ClientPlayNetworking.canSend(packet.id())) {
+            return;
         }
+        FriendlyByteBuf buffer = PacketByteBufs.create();
+        packet.write(buffer);
+        ClientPlayNetworking.send(packet.id(), buffer);
     }
 }

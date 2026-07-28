@@ -1,9 +1,9 @@
 # Contributing
 
-Meal Mastery targets Java 21, Minecraft 1.21.1, Fabric and NeoForge.
+Meal Mastery targets Java 17, Minecraft 1.20.1, Fabric and Forge.
 
-Farmer's Delight has no Forge build for 1.21.1. The `1.20.1` branch targets
-Minecraft 1.20.1 on Fabric and Forge.
+The `1.21.1` branch targets Minecraft 1.21.1 on Fabric and NeoForge;
+Farmer's Delight has no Forge build for that version.
 
 Run the complete verification suite before submitting changes:
 
@@ -25,25 +25,37 @@ Run the complete verification suite before submitting changes:
 4. **Fail open.** A Meal Mastery failure must never stop Farmer's Delight from
    cooking food.
 5. **Server authoritative.** No client packet may claim progression.
-6. Loader-independent code lives in `common`; `fabric` and `neoforge` carry
-   only loader hooks and packet transport.
+6. Loader-independent code lives in `common`; `fabric` and `forge` carry only
+   loader hooks and packet transport.
 7. Mixins need a narrow target, a documented purpose and a compatibility note.
 
 ## Development launches
 
 ```bash
 ./gradlew :fabric:runClient
-./gradlew :neoforge:runClient
+./gradlew :forge:runClient -Pdev_farmersdelight=true
 ```
 
-Farmer's Delight is pulled into dev launches automatically. It is a hard
-runtime dependency of the shipped mod, so a launch without it cannot start —
-the loader refuses with "requires farmersdelight, which is missing". Opt out
-only if you want to see that failure:
+Farmer's Delight is loaded automatically on Fabric. It is a hard runtime
+dependency of the shipped mod, so a launch without it cannot start — the loader
+refuses with "requires farmersdelight, which is missing". Opt out with
+`-Pdev_farmersdelight=false` only if you want to see that failure.
 
-```bash
-./gradlew :fabric:runClient -Pdev_farmersdelight=false
-```
+**Forge is the exception and must be asked for explicitly.** Neither default is
+good there, so the one that at least boots was chosen; see below.
 
-The dev-launch copy of Farmer's Delight Refabricated is pinned below the latest
-release; `gradle.properties` explains why. It never touches the compile path.
+Two dev-environment quirks, neither of which affects the shipped jar:
+
+* **Fabric.** Farmer's Delight Refabricated ships its dependencies as nested
+  jars and Loom does not unpack those for a plain Maven `modRuntimeOnly`, so
+  Fabric ASM and the exact Porting Lib modules the jar bundles are named
+  individually in `fabric/build.gradle`. Substituting the aggregate
+  `porting_lib` mod does not work: newer builds of it demand a newer Fabric
+  Loader than this branch targets.
+* **Forge.** Farmer's Delight for Forge ships an SRG-mapped refmap for its own
+  mixins, which ModDevGradle's Mojang-mapped dev runtime cannot resolve —
+  `CuttingBoardDispenserMixin` fails on `DispenserBlock` and the game does not
+  start. That is why it stays opt-in here even though Fabric does not: enabling
+  it by default would break `:forge:runClient` outright. A real Forge
+  installation is unaffected. Use the Fabric launch to exercise the mod against
+  Farmer's Delight.

@@ -179,8 +179,7 @@ public final class CookingBonuses {
      * branches differ in exactly one place.
      */
     private static MobEffectInstance newEffect(MobEffect effect, int duration, int amplifier) {
-        return new MobEffectInstance(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),
-                duration, amplifier, false, true, true);
+        return new MobEffectInstance(effect, duration, amplifier, false, true, true);
     }
 
     /** Star rating for a dish, 0..5, used by tooltips and the journal. */

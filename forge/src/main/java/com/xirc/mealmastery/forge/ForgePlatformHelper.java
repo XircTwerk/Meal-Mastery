@@ -1,28 +1,29 @@
-package com.xirc.mealmastery.neoforge;
+package com.xirc.mealmastery.forge;
 
 import com.xirc.mealmastery.platform.IPlatformHelper;
 import com.xirc.mealmastery.util.ModIdNames;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.versions.forge.ForgeVersion;
+import net.minecraftforge.versions.mcp.MCPVersion;
 
 import java.nio.file.Path;
 
-public final class NeoForgePlatformHelper implements IPlatformHelper {
+public final class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public String loaderName() {
-        return "NeoForge";
+        return "Forge";
     }
 
     @Override
     public String loaderVersion() {
-        return NeoForgeVersion.getVersion();
+        return ForgeVersion.getVersion();
     }
 
     @Override
     public String minecraftVersion() {
-        return FMLLoaderVersions.minecraftVersion();
+        return MCPVersion.getMCVersion();
     }
 
     @Override
@@ -50,15 +51,5 @@ public final class NeoForgePlatformHelper implements IPlatformHelper {
         return ModList.get().getModContainerById(modId)
                 .map(container -> container.getModInfo().getDisplayName())
                 .orElseGet(() -> ModIdNames.prettify(modId));
-    }
-
-    /** Split out so the version lookup stays in one place if NeoForge moves it again. */
-    private static final class FMLLoaderVersions {
-        private FMLLoaderVersions() {
-        }
-
-        static String minecraftVersion() {
-            return net.neoforged.fml.loading.FMLLoader.versionInfo().mcVersion();
-        }
     }
 }

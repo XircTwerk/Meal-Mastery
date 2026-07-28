@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StreakStateTest {
-    private static final ResourceLocation SOUP = ResourceLocation.fromNamespaceAndPath("farmersdelight", "onion_soup");
-    private static final ResourceLocation STEW = ResourceLocation.fromNamespaceAndPath("farmersdelight", "beef_stew");
-    private static final ResourceLocation SALAD = ResourceLocation.fromNamespaceAndPath("farmersdelight", "mixed_salad");
+    private static final ResourceLocation SOUP = new ResourceLocation("farmersdelight", "onion_soup");
+    private static final ResourceLocation STEW = new ResourceLocation("farmersdelight", "beef_stew");
+    private static final ResourceLocation SALAD = new ResourceLocation("farmersdelight", "mixed_salad");
 
     @Test
     void cookingOnConsecutiveDaysExtendsTheStreak() {

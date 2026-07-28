@@ -1,10 +1,8 @@
 package com.xirc.mealmastery.culinary;
 
 import com.xirc.mealmastery.mastery.MasteryRank;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 
 import java.util.UUID;
 
@@ -17,10 +15,11 @@ import java.util.UUID;
  * cannot be better for the person they hand it to unless the food itself
  * remembers who cooked it.</p>
  *
- * <p>Stored in vanilla's {@code CUSTOM_DATA} component under our own key, so no
- * component type is registered and an unstamped stack is byte-identical to
- * vanilla food. Stamped and unstamped stacks do not merge, which is what keeps
- * a batch of good food from being diluted by a batch of bad.</p>
+ * <p>Stored under our own key in the stack's tag, so an unstamped stack is
+ * byte-identical to vanilla food. Stamped and unstamped stacks do not merge,
+ * which is what keeps a batch of good food from being diluted by a batch of
+ * bad. (1.21 stores the same compound in the {@code CUSTOM_DATA} component
+ * instead; this class is the only place that differs.)</p>
  *
  * @param stars   the cook's rank with this dish, 0..{@link MasteryRank#highestIndex()}
  * @param perfect whether this attempt rolled a perfect result
@@ -53,12 +52,8 @@ public record MealStamp(int stars, boolean perfect, UUID cookId, String cookName
         if (stack == null || stack.isEmpty()) {
             return null;
         }
-        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-        if (data == null) {
-            return null;
-        }
-        CompoundTag root = data.copyTag();
-        if (!root.contains(ROOT, net.minecraft.nbt.Tag.TAG_COMPOUND)) {
+        CompoundTag root = stack.getTag();
+        if (root == null || !root.contains(ROOT, net.minecraft.nbt.Tag.TAG_COMPOUND)) {
             return null;
         }
         CompoundTag tag = root.getCompound(ROOT);
@@ -72,9 +67,6 @@ public record MealStamp(int stars, boolean perfect, UUID cookId, String cookName
     }
 
     public void write(ItemStack stack) {
-        CustomData existing = stack.get(DataComponents.CUSTOM_DATA);
-        CompoundTag root = existing == null ? new CompoundTag() : existing.copyTag();
-
         CompoundTag tag = new CompoundTag();
         tag.putInt(STARS, stars);
         if (perfect) {
@@ -86,7 +78,6 @@ public record MealStamp(int stars, boolean perfect, UUID cookId, String cookName
         if (!cookName.isEmpty()) {
             tag.putString(COOK_NAME, cookName);
         }
-        root.put(ROOT, tag);
-        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(root));
+        stack.getOrCreateTag().put(ROOT, tag);
     }
 }

@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.13.4'
+    id 'fabric-loom' version '1.10.4'
 }
 
 base {
@@ -13,17 +13,27 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
 
-    // Development runtime only; never on any compile path. On by default
-    // because Farmer's Delight is a hard dependency of the shipped mod, so a
-    // dev launch without it cannot start at all. Opt out with
+    // On by default: Farmer's Delight is a hard runtime dependency of the
+    // shipped mod, so a dev launch without it cannot start at all. Opt out with
     //     ./gradlew :fabric:runClient -Pdev_farmersdelight=false
-    // See gradle.properties for why the version is pinned below the latest.
+    //
+    // Farmer's Delight Refabricated ships its dependencies as nested jars, and
+    // Loom does not unpack those for a plain Maven `modRuntimeOnly`, so they
+    // have to be named individually. Even then the set has to match what the
+    // jar bundles - a newer Porting Lib demands a newer Fabric Loader. None of
+    // this affects the shipped mod: Meal Mastery has no compile-time link to
+    // Farmer's Delight at all, and a real installation resolves the nested
+    // jars normally.
     if (findProperty('dev_farmersdelight') != 'false') {
         modRuntimeOnly "maven.modrinth:farmers-delight-refabricated:${farmersdelight_fabric_version}"
-        // Loom does not unpack a mod dependency's nested jars, and Farmer's
-        // Delight needs this one to extend the RecipeBookType enum - without it
-        // the game crashes as soon as a world loads.
         modRuntimeOnly "com.github.Chocohead:Fabric-ASM:${fabric_asm_version}"
+        // The exact Porting Lib modules the jar bundles. The aggregate
+        // `porting_lib` mod cannot be substituted: newer builds of it demand a
+        // newer Fabric Loader than this branch targets.
+        ['accessors', 'base', 'config', 'lazy_registration', 'loot', 'networking',
+         'recipe_book_categories', 'tags', 'tool_actions'].each { module ->
+            modRuntimeOnly "io.github.fabricators_of_create.Porting-Lib:${module}:${porting_lib_version}"
+        }
     }
 
     compileOnly project(':common')

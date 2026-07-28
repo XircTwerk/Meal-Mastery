@@ -25,14 +25,14 @@ import java.util.List;
 public record FoodCategory(ResourceLocation id, List<TagKey<Item>> tags, int priority) {
 
     public static final ResourceLocation UNCATEGORISED_ID =
-            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "uncategorised");
+            new ResourceLocation(Constants.MOD_ID, "uncategorised");
 
     /** Returned when no definition matches; never null, never guessed. */
     public static final FoodCategory UNCATEGORISED =
             new FoodCategory(UNCATEGORISED_ID, List.of(), Integer.MAX_VALUE);
 
     public static final ResourceLocation OTHER_FOOD_ID =
-            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "other_food");
+            new ResourceLocation(Constants.MOD_ID, "other_food");
 
     /**
      * Fallback for an edible dish no specific definition matched.
@@ -69,7 +69,7 @@ public record FoodCategory(ResourceLocation id, List<TagKey<Item>> tags, int pri
 
     @SafeVarargs
     private static FoodCategory builtIn(String path, int priority, TagKey<Item>... tags) {
-        return new FoodCategory(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path),
+        return new FoodCategory(new ResourceLocation(Constants.MOD_ID, path),
                 List.of(tags), priority);
     }
 
@@ -94,36 +94,53 @@ public record FoodCategory(ResourceLocation id, List<TagKey<Item>> tags, int pri
     /**
      * Built-in ingredient categories.
      *
-     * <p>1.21 retired the {@code forge:} namespace entirely, and both loaders
-     * now populate the same {@code c:} conventional tags. That is a real
-     * simplification over the 1.20.1 branch, which had to list a Forge and a
-     * Fabric spelling for every category.</p>
+     * <p>Both the Forge {@code forge:} convention and the Fabric {@code c:}
+     * convention are listed for every category, because the audit found the
+     * Fabric port of Farmer's Delight populates both and the Forge build only
+     * populates {@code forge:}.</p>
      */
     public static List<FoodCategory> builtInIngredientCategories() {
         List<FoodCategory> categories = new ArrayList<>();
         categories.add(builtIn("ingredient/fish", 10,
-                CulinaryTags.item("c", "foods/raw_fish"),
-                CulinaryTags.item("c", "foods/cooked_fish")));
+                CulinaryTags.item("forge", "raw_fishes"),
+                CulinaryTags.item("forge", "cooked_fishes"),
+                CulinaryTags.item("c", "raw_fishes"),
+                CulinaryTags.item("c", "cooked_fishes")));
         categories.add(builtIn("ingredient/meat", 20,
-                CulinaryTags.item("c", "foods/raw_meat"),
-                CulinaryTags.item("c", "foods/cooked_meat")));
+                CulinaryTags.item("forge", "raw_meat"),
+                CulinaryTags.item("forge", "cooked_beef"),
+                CulinaryTags.item("forge", "cooked_pork"),
+                CulinaryTags.item("forge", "cooked_chicken"),
+                CulinaryTags.item("forge", "cooked_mutton"),
+                CulinaryTags.item("forge", "cooked_bacon"),
+                CulinaryTags.item("c", "raw_meats"),
+                CulinaryTags.item("c", "cooked_meats")));
         categories.add(builtIn("ingredient/dairy", 30,
-                CulinaryTags.item("c", "drinks/milk"),
-                CulinaryTags.item("c", "buckets/milk")));
+                CulinaryTags.item("forge", "milk"),
+                CulinaryTags.item("c", "milks")));
         categories.add(builtIn("ingredient/egg", 40,
-                CulinaryTags.item("c", "eggs"),
-                CulinaryTags.item("c", "foods/cooked_egg")));
+                CulinaryTags.item("forge", "eggs"),
+                CulinaryTags.item("c", "eggs")));
         categories.add(builtIn("ingredient/grain", 50,
-                CulinaryTags.item("c", "crops/grain"),
-                CulinaryTags.item("c", "foods/bread"),
-                CulinaryTags.item("c", "foods/dough"),
-                CulinaryTags.item("c", "foods/pasta")));
+                CulinaryTags.item("forge", "grain"),
+                CulinaryTags.item("forge", "bread"),
+                CulinaryTags.item("forge", "dough"),
+                CulinaryTags.item("forge", "pasta"),
+                CulinaryTags.item("c", "grains"),
+                CulinaryTags.item("c", "dough")));
         categories.add(builtIn("ingredient/fruit", 60,
-                CulinaryTags.item("c", "foods/fruit"),
-                CulinaryTags.item("c", "foods/berry")));
+                CulinaryTags.item("forge", "fruits"),
+                CulinaryTags.item("forge", "berries"),
+                CulinaryTags.item("c", "fruits"),
+                CulinaryTags.item("c", "berries")));
         categories.add(builtIn("ingredient/vegetable", 70,
-                CulinaryTags.item("c", "foods/vegetable")));
+                CulinaryTags.item("forge", "vegetables"),
+                CulinaryTags.item("forge", "salad_ingredients"),
+                CulinaryTags.item("c", "vegetables"),
+                CulinaryTags.item("c", "salad_ingredients")));
         categories.add(builtIn("ingredient/crop", 80,
+                CulinaryTags.item("forge", "crops"),
+                CulinaryTags.item("forge", "seeds"),
                 CulinaryTags.item("c", "crops"),
                 CulinaryTags.item("c", "seeds")));
         return categories;

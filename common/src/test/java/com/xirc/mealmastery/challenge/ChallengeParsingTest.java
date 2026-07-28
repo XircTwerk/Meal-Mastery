@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ChallengeParsingTest {
     private static final Gson GSON = new Gson();
-    private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("mealmastery", "soup_season");
+    private static final ResourceLocation ID = new ResourceLocation("mealmastery", "soup_season");
 
     private static JsonObject json(String raw) {
         return GSON.fromJson(raw, JsonObject.class);
@@ -94,14 +94,14 @@ class ChallengeParsingTest {
                 ChallengeObjective.Type.COOK_RECIPE, "", 3, true);
         ChallengeState state = new ChallengeState(1);
 
-        ResourceLocation stew = ResourceLocation.fromNamespaceAndPath("farmersdelight", "beef_stew");
+        ResourceLocation stew = new ResourceLocation("farmersdelight", "beef_stew");
         assertTrue(state.advanceUnique(0, stew));
         assertEquals(false, state.advanceUnique(0, stew), "the same dish must not count twice");
-        state.advanceUnique(0, ResourceLocation.fromNamespaceAndPath("farmersdelight", "onion_soup"));
+        state.advanceUnique(0, new ResourceLocation("farmersdelight", "onion_soup"));
         assertEquals(2, state.progress(0));
         assertEquals(false, state.satisfies(java.util.List.of(unique)));
 
-        state.advanceUnique(0, ResourceLocation.fromNamespaceAndPath("farmersdelight", "mixed_salad"));
+        state.advanceUnique(0, new ResourceLocation("farmersdelight", "mixed_salad"));
         assertTrue(state.satisfies(java.util.List.of(unique)));
     }
 
@@ -125,12 +125,12 @@ class ChallengeParsingTest {
     void stateRoundTripsThroughNbt() {
         ChallengeState state = new ChallengeState(2);
         state.advance(0, 4);
-        state.advanceUnique(1, ResourceLocation.fromNamespaceAndPath("farmersdelight", "beef_stew"));
+        state.advanceUnique(1, new ResourceLocation("farmersdelight", "beef_stew"));
 
         ChallengeState loaded = ChallengeState.load(state.save(), 2);
         assertEquals(4, loaded.progress(0));
         assertEquals(1, loaded.progress(1));
-        assertEquals(false, loaded.advanceUnique(1, ResourceLocation.fromNamespaceAndPath("farmersdelight", "beef_stew")),
+        assertEquals(false, loaded.advanceUnique(1, new ResourceLocation("farmersdelight", "beef_stew")),
                 "the restored state still remembers which subjects were counted");
     }
 }

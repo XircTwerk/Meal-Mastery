@@ -2,7 +2,7 @@ package com.xirc.mealmastery.recipe;
 
 import com.xirc.mealmastery.MealMasteryLog;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +25,7 @@ public final class CulinaryRegistries {
         return current;
     }
 
-    public static void rebuild(Collection<RecipeHolder<?>> recipes,
+    public static void rebuild(Collection<? extends Recipe<?>> recipes,
                                RegistryAccess registryAccess,
                                EligibilityRules rules,
                                List<FoodCategory> dishCategories) {

@@ -5,18 +5,15 @@ audit (and update this file) before retargeting another Minecraft version.
 
 | | |
 |---|---|
-| Minecraft | `1.21.1` |
-| Java | `21` |
-| NeoForge build audited | `FarmersDelight-1.21.1-1.3.2.jar` (mod id `farmersdelight`, NeoForge `[4,)`) |
-| Fabric build audited | `FarmersDelight-1.21.1-3.3.3+refabricated.jar` (mod id `farmersdelight`, Fabric API required) |
+| Minecraft | `1.20.1` |
+| Java | `17` |
+| Forge build audited | `FarmersDelight-1.20.1-1.3.2.jar` (mod id `farmersdelight`, Forge `[47.1.0,)`) |
+| Fabric build audited | `FarmersDelight-1.20.1-2.4.1+refabricated.jar` (mod id `farmersdelight`, Fabric API required) |
 | Audited on | 2026-07-26 |
-
-**There is no Forge build of Farmer's Delight for 1.21.1** — only NeoForge and
-Fabric — which is why this branch replaces the `forge` module with `neoforge`.
 
 Both distributions share the mod id `farmersdelight`, the same package root
 (`vectorwing.farmersdelight`), the same recipe type ids, the same item ids and
-the same tag ids. **The version numbers differ wildly (1.3.x vs 3.3.x) — never
+the same tag ids. **The version numbers differ wildly (1.3.x vs 2.4.x) — never
 gate behaviour on the Farmer's Delight version string.**
 
 ---
@@ -25,64 +22,61 @@ gate behaviour on the Farmer's Delight version string.**
 
 Counted across every recipe json shipped by each jar.
 
-| Recipe type | NeoForge 1.3.2 | Fabric 3.3.3 | Meal Mastery treatment |
+| Recipe type | Forge 1.3.2 | Fabric 2.4.1 | Meal Mastery treatment |
 |---|---:|---:|---|
-| `farmersdelight:cooking` | 28 | 28 | Cooking Pot method |
-| `farmersdelight:cutting` | 106 | 106 | Cutting Board method |
-| `minecraft:crafting_shaped` | 54 | 54 | Crafting method |
-| `minecraft:crafting_shapeless` | 86 | 86 | Crafting method |
+| `farmersdelight:cooking` | 28 | 27 | Cooking Pot method |
+| `farmersdelight:cutting` | 106 | 126 | Cutting Board method |
+| `farmersdelight:food_serving` | 1 | 1 | Feast serving (dynamic) |
+| `farmersdelight:dough` | 1 | 1 | Crafting (special) |
+| `minecraft:crafting_shaped` | 54 | 49 | Crafting method |
+| `minecraft:crafting_shapeless` | 86 | 85 | Crafting method |
 | `minecraft:smelting` | 10 | 10 | Smelting method |
 | `minecraft:smoking` | 9 | 9 | Smoking method |
 | `minecraft:campfire_cooking` | 7 | 7 | Campfire method |
 | `minecraft:blasting` | 2 | 2 | Not culinary |
-
-The two builds now agree exactly on recipe counts, unlike 1.20.1 where the
-Fabric port split cutting recipes to avoid tool actions.
+| `minecraft:smithing_transform` | 1 | 1 | Not culinary |
 
 Loader-only extras that must not be assumed present:
 
-* `farmersdelight:item_ability` (NeoForge, 105 uses) — an **ingredient**
-  serializer used inside `cutting` recipes' `tool` field, not a recipe type.
-  Renamed from `tool_action` in 1.20.1.
-* `neoforge:mod_loaded`, `neoforge:compound`, `neoforge:difference`,
-  `neoforge:tag`, `farmersdelight:vanilla_crates_enabled` — NeoForge-only
-  recipe conditions and ingredient types. Conditions are resolved before
-  recipes reach the registry, so Meal Mastery never sees them.
+* `farmersdelight:tool_action` (Forge, 106 uses) — an **ingredient** serializer
+  used inside `cutting` recipes' `tool` field, not a recipe type. The Fabric
+  port drops it entirely, which is why its `cutting` count is higher (it splits
+  recipes instead of using tool actions).
+* `forge:conditional`, `forge:mod_loaded`, `farmersdelight:vanilla_crates_enabled` —
+  Forge-only recipe conditions. They are resolved before recipes reach the
+  registry, so Meal Mastery never sees them.
 * Cross-mod recipes shipped for optional integrations (`create:milling`,
-  `create:mixing`, `immersiveengineering:*`) appear in both jars. They only
-  load when those mods are present.
+  `create:mixing`, `create:filling`, `immersiveengineering:*`) appear in both
+  jars. They only load when those mods are present.
 
 ### Consequence for Meal Mastery
 
 Recipe types are resolved by `ResourceLocation` out of `BuiltInRegistries.RECIPE_TYPE`
-at recipe-reload time. `RecipeHolder#id`, `Recipe#getType`, `#getIngredients`
-and `#getResultItem` are all vanilla, so a
+at recipe-reload time. `Recipe#getType`, `#getId`, `#getIngredients` and
+`#getResultItem(RegistryAccess)` are all vanilla interface methods, so a
 Farmer's Delight cooking recipe and an addon's cooking recipe are read through
 exactly the same code path. **Meal Mastery has no compile-time dependency on
 Farmer's Delight at all** — see [architecture.md](architecture.md).
 
 ## 2. Sample recipe shapes
 
-`farmersdelight:cooking` (`data/farmersdelight/recipe/cooking/baked_cod_stew.json`):
+`farmersdelight:cooking` (`data/farmersdelight/recipes/cooking/baked_cod_stew.json`):
 
 ```json
 {
   "type": "farmersdelight:cooking",
+  "cookingtime": 200,
   "experience": 1.0,
   "ingredients": [
-    { "tag": "c:foods/raw_cod" },
-    { "tag": "c:crops/potato" },
-    { "tag": "c:eggs" },
-    { "tag": "c:crops/tomato" }
+    { "tag": "forge:raw_fishes/cod" },
+    { "tag": "forge:crops/potato" },
+    { "tag": "forge:eggs" },
+    { "tag": "forge:crops/tomato" }
   ],
   "recipe_book_tab": "meals",
-  "result": { "count": 1, "id": "farmersdelight:baked_cod_stew" }
+  "result": { "item": "farmersdelight:baked_cod_stew" }
 }
 ```
-
-Note the 1.21 shape changes: the recipe directory is `recipe`, not `recipes`,
-and a result is `{ "id": ..., "count": ... }` rather than `{ "item": ... }`.
-Neither matters to Meal Mastery, which reads recipes through the registry.
 
 Notable: ingredients are frequently **tags**, which is exactly what the
 ingredient-variant tracking in the design needs. `container` is an
@@ -98,7 +92,7 @@ optional extra field (bowl/bottle) that we ignore as an ingredient.
     { "item": "minecraft:stripped_acacia_log" },
     { "item": "farmersdelight:tree_bark" }
   ],
-  "tool": [ { "type": "farmersdelight:item_ability", "action": "axe_strip" },
+  "tool": [ { "type": "farmersdelight:tool_action", "action": "axe_strip" },
             { "tag": "minecraft:axes" } ],
   "sound": "minecraft:item.axe.strip"
 }
@@ -134,23 +128,14 @@ makes it a good default for "is this a prepared dish".
 (`roast_chicken_block`, `stuffed_pumpkin_block`, `shepherds_pie_block`,
 `honey_glazed_ham_block`, `gleaming_salad_block`, `rice_roll_medley_block`).
 
-**Ingredient-classification tags — now identical on both loaders**
+**Ingredient-classification tags — the loader difference that matters**
 
-The `forge:` namespace is gone. Both jars populate the same `c:` conventional
-tags:
+| Forge jar | Fabric jar |
+|---|---|
+| `forge:vegetables`, `forge:crops`, `forge:raw_meat`, `forge:raw_fishes/*`, `forge:cooked_*`, `forge:eggs`, `forge:milk`, `forge:grain`, `forge:dough`, `forge:pasta`, `forge:bread`, `forge:berries`, `forge:seeds`, `forge:salad_ingredients` | the same `forge:` tags **plus** `c:` conventional equivalents (`c:foods`, `c:grains`, `c:milks`, `c:vegetables/*`, `c:crops/*`, `c:salad_ingredients`, `c:dough`, `c:seeds`, …) |
 
-`c:foods/vegetable`, `c:foods/fruit`, `c:foods/raw_meat`, `c:foods/cooked_meat`,
-`c:foods/raw_fish`, `c:foods/cooked_fish`, `c:foods/bread`, `c:foods/dough`,
-`c:foods/pasta`, `c:foods/pie`, `c:foods/soup`, `c:foods/cooked_egg`,
-`c:crops`, `c:crops/grain`, `c:seeds`, `c:eggs`, `c:drinks/milk`, …
-
-This is a genuine simplification over the 1.20.1 branch, which had to list a
-Forge and a Fabric spelling for every category. A missing tag is still treated
-as "uncategorised" rather than guessed at.
-
-**Tag directory rename.** 1.21 renamed `tags/items` to `tags/item` and
-`tags/blocks` to `tags/block` on disk. Tag *ids* are unchanged, so nothing in
-Meal Mastery had to move.
+Meal Mastery's ingredient categoriser therefore consults **both** namespaces and
+treats a missing tag as "uncategorised" rather than guessing.
 
 ## 4. Effects
 
@@ -186,18 +171,16 @@ hooks:
    `ServerEntityEvents.ENTITY_LOAD` inside an open attribution window. Covers
    the cutting board.
 
-Eating is the only surface with no shared hook: NeoForge has
+Eating is the only surface with no shared hook: Forge has
 `LivingEntityUseItemEvent.Finish`, Fabric has nothing, so Fabric carries one
-narrow read-only mixin on `LivingEntity#eat(Level, ItemStack, FoodProperties)` —
-the food-properties parameter is new in 1.21, where food moved into an item
-component.
+narrow read-only mixin on `LivingEntity#eat`.
 
 ## 6. Things deliberately *not* assumed
 
 * No Farmer's Delight class, field or method is referenced anywhere in the mod.
 * No Farmer's Delight version check — the two distributions disagree by a whole
   major version.
-* No `farmersdelight:item_ability` handling — NeoForge-only.
+* No `farmersdelight:tool_action` handling — Forge-only.
 * No assumption that a cutting recipe produces food, or that a cooking recipe's
   single result is the only output.
 * No assumption that `farmersdelight:nourishment` exists.
@@ -205,9 +188,9 @@ component.
 ## 7. Reproducing this audit
 
 ```bash
-curl -L -o fd-neoforge.jar https://cdn.modrinth.com/data/R2OftAxM/versions/GbNuOZ4S/FarmersDelight-1.21.1-1.3.2.jar
-curl -L -o fd-fabric.jar 'https://cdn.modrinth.com/data/7vxePowz/versions/NCLOIK5z/FarmersDelight-1.21.1-3.3.3%2Brefabricated.jar'
-mkdir -p ex && (cd ex && unzip -oq ../fd-neoforge.jar)
-grep -rhoE '"type"[[:space:]]*:[[:space:]]*"[^"]+"' ex/data/farmersdelight/recipe/ | sort | uniq -c | sort -rn
-ls ex/data/farmersdelight/tags/item ex/data/farmersdelight/tags/block ex/data/c/tags/item
+curl -L -o fd-forge.jar https://cdn.modrinth.com/data/R2OftAxM/versions/CsjS7EkP/FarmersDelight-1.20.1-1.3.2.jar
+curl -L -o fd-fabric.jar 'https://cdn.modrinth.com/data/7vxePowz/versions/Z8UNayLO/FarmersDelight-1.20.1-2.4.1%2Brefabricated.jar'
+mkdir -p ex && (cd ex && unzip -oq ../fd-forge.jar)
+grep -rhoE '"type"[[:space:]]*:[[:space:]]*"[^"]+"' ex/data/farmersdelight/recipes/ | sort | uniq -c | sort -rn
+ls ex/data/farmersdelight/tags/items ex/data/farmersdelight/tags/blocks
 ```

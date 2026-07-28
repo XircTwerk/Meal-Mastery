@@ -25,7 +25,7 @@ public final class Packets {
     }
 
     private static ResourceLocation packetId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path);
+        return new ResourceLocation(Constants.MOD_ID, path);
     }
 
     // ------------------------------------------------------- server to client

@@ -68,9 +68,7 @@ public final class EligibilityRules {
         }
         ResourceLocation itemId = net.minecraft.core.registries.BuiltInRegistries.ITEM
                 .getKey(output.getItem());
-        // 1.21 replaced ItemStack#isEdible with a food data component.
-        return evaluate(recipeId, recipeTypeId, itemId,
-                output.has(net.minecraft.core.component.DataComponents.FOOD), output::is);
+        return evaluate(recipeId, recipeTypeId, itemId, output.isEdible(), output::is);
     }
 
     /**

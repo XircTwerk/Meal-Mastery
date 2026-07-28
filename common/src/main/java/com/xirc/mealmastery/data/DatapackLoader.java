@@ -87,6 +87,6 @@ public final class DatapackLoader {
             return null;
         }
         String name = raw.substring(prefix.length(), raw.length() - SUFFIX.length());
-        return name.isEmpty() ? null : ResourceLocation.fromNamespaceAndPath(path.getNamespace(), name);
+        return name.isEmpty() ? null : new ResourceLocation(path.getNamespace(), name);
     }
 }

@@ -133,7 +133,7 @@ public final class ServerPacketHandler {
                 }
             }
             collections.add(new Packets.CollectionView(
-                    ResourceLocation.fromNamespaceAndPath(mod.modId(), "mod_collection"),
+                    new ResourceLocation(mod.modId(), "mod_collection"),
                     mod.displayName(), true,
                     mod.members().isEmpty() ? null : mod.members().get(0),
                     mod.members().size(), discovered, mastered));

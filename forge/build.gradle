@@ -1,0 +1,67 @@
+plugins {
+    id 'idea'
+    id 'net.neoforged.moddev.legacyforge' version '2.0.95'
+}
+
+base {
+    archivesName = "${mod_id}-forge-${minecraft_version}"
+}
+
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+        }
+    }
+
+    mods {
+        mealmastery {
+            sourceSet sourceSets.main
+            sourceSet project(':common').sourceSets.main
+        }
+    }
+}
+
+dependencies {
+    // Off by default. Farmer's Delight for Forge ships an SRG-mapped refmap for
+    // its own mixins, which ModDevGradle's Mojang-mapped dev runtime cannot
+    // always resolve (CuttingBoardDispenserMixin fails on DispenserBlock). That
+    // is a dev-environment quirk, not a problem with the shipped jar, but it
+    // stops the game booting, so it has to be asked for:
+    //     ./gradlew :forge:runServer -Pdev_farmersdelight=true
+    // The Fabric dev launch loads Farmer's Delight without any of this.
+    if (findProperty('dev_farmersdelight') == 'true') {
+        runtimeOnly "maven.modrinth:farmers-delight:${farmersdelight_forge_version}"
+    }
+
+    compileOnly project(':common')
+}
+
+compileJava {
+    source(project(':common').sourceSets.main.allSource)
+}
+
+sourcesJar {
+    from(project(':common').sourceSets.main.allSource)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+processResources {
+    from project(':common').sourceSets.main.resources
+    inputs.properties(
+            version: version,
+            farmersdelight_forge_version_range: farmersdelight_forge_version_range
+    )
+    filesMatching('META-INF/mods.toml') {
+        expand(
+                version: version,
+                farmersdelight_forge_version_range: farmersdelight_forge_version_range
+        )
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

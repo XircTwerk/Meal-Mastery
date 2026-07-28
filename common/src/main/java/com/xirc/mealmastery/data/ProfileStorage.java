@@ -3,7 +3,6 @@ package com.xirc.mealmastery.data;
 import com.xirc.mealmastery.MealMasteryLog;
 import com.xirc.mealmastery.culinary.CulinaryProfile;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 
 import java.io.IOException;
@@ -45,7 +44,7 @@ public final class ProfileStorage {
             return new CulinaryProfile(playerId);
         }
         try (InputStream input = Files.newInputStream(file)) {
-            CompoundTag tag = NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap());
+            CompoundTag tag = NbtIo.readCompressed(input);
             return CulinaryProfile.load(playerId, ProfileMigrations.migrate(tag));
         } catch (IOException | RuntimeException failure) {
             // A profile we cannot read is set aside rather than overwritten, so

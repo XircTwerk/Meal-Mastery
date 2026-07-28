@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -60,13 +59,11 @@ public final class RecipeClassifier {
         }
     }
 
-    public Classification classify(RecipeHolder<?> holder) {
-        Recipe<?> recipe = holder.value();
+    public Classification classify(Recipe<?> recipe) {
         ResourceLocation recipeId;
         ResourceLocation recipeTypeId;
         try {
-            // 1.21 moved the id off the recipe and onto the holder that wraps it.
-            recipeId = holder.id();
+            recipeId = recipe.getId();
             recipeTypeId = BuiltInRegistries.RECIPE_TYPE.getKey(recipe.getType());
         } catch (RuntimeException | LinkageError failure) {
             logFailure(null, failure);

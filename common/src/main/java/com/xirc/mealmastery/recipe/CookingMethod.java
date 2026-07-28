@@ -31,7 +31,7 @@ public record CookingMethod(ResourceLocation id) {
     }
 
     public static CookingMethod of(String namespace, String path) {
-        return new CookingMethod(ResourceLocation.fromNamespaceAndPath(namespace, path));
+        return new CookingMethod(new ResourceLocation(namespace, path));
     }
 
     public static CookingMethod of(ResourceLocation id) {

@@ -39,10 +39,10 @@ public final class WorkstationRegistry {
     private static Map<ResourceLocation, CookingMethod> defaults() {
         Map<ResourceLocation, CookingMethod> map = new LinkedHashMap<>();
         String fd = Constants.FARMERS_DELIGHT_ID;
-        map.put(ResourceLocation.fromNamespaceAndPath(fd, "cooking_pot"), CookingMethod.COOKING_POT);
-        map.put(ResourceLocation.fromNamespaceAndPath(fd, "cutting_board"), CookingMethod.CUTTING_BOARD);
-        map.put(ResourceLocation.fromNamespaceAndPath(fd, "skillet"), CookingMethod.of(fd, "skillet"));
-        map.put(ResourceLocation.fromNamespaceAndPath(fd, "stove"), CookingMethod.of(fd, "stove"));
+        map.put(new ResourceLocation(fd, "cooking_pot"), CookingMethod.COOKING_POT);
+        map.put(new ResourceLocation(fd, "cutting_board"), CookingMethod.CUTTING_BOARD);
+        map.put(new ResourceLocation(fd, "skillet"), CookingMethod.of(fd, "skillet"));
+        map.put(new ResourceLocation(fd, "stove"), CookingMethod.of(fd, "stove"));
         return map;
     }
 

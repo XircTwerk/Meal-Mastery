@@ -16,23 +16,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EligibilityRulesTest {
     private static final ResourceLocation RECIPE =
-            ResourceLocation.fromNamespaceAndPath("farmersdelight", "cooking/beef_stew");
+            new ResourceLocation("farmersdelight", "cooking/beef_stew");
     private static final ResourceLocation COOKING_TYPE =
-            ResourceLocation.fromNamespaceAndPath("farmersdelight", "cooking");
+            new ResourceLocation("farmersdelight", "cooking");
     private static final ResourceLocation CUTTING_TYPE =
-            ResourceLocation.fromNamespaceAndPath("farmersdelight", "cutting");
+            new ResourceLocation("farmersdelight", "cutting");
     private static final ResourceLocation BEEF_STEW =
-            ResourceLocation.fromNamespaceAndPath("farmersdelight", "beef_stew");
+            new ResourceLocation("farmersdelight", "beef_stew");
     private static final ResourceLocation STRIPPED_LOG =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "stripped_acacia_log");
+            new ResourceLocation("minecraft", "stripped_acacia_log");
     private static final ResourceLocation ADDON_DISH =
-            ResourceLocation.fromNamespaceAndPath("netherdelight", "hoglin_loin");
+            new ResourceLocation("netherdelight", "hoglin_loin");
     private static final ResourceLocation BREAD =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "bread");
+            new ResourceLocation("minecraft", "bread");
     private static final ResourceLocation BREAD_RECIPE =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "bread");
+            new ResourceLocation("minecraft", "bread");
     private static final ResourceLocation CRAFTING_TYPE =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "crafting");
+            new ResourceLocation("minecraft", "crafting");
 
     private static final Predicate<TagKey<Item>> NO_TAGS = tag -> false;
 

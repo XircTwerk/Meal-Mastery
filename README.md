@@ -8,14 +8,10 @@ challenges and a culinary journal to [Farmer's Delight](https://modrinth.com/mod
 
 | | |
 |---|---|
-| Minecraft | 1.21.1 |
-| Loaders | Fabric, NeoForge |
+| Minecraft | 1.20.1 |
+| Loaders | Fabric, Forge |
 | Requires | Farmer's Delight |
 | Custom art assets | **zero** |
-
-Minecraft 1.20.1 (Fabric, Forge) lives on the
-[`1.20.1`](https://github.com/XircTwerk/Meal-Mastery/tree/1.20.1) branch.
-Farmer's Delight has no Forge build for 1.21.1, which is why the loaders differ.
 
 ## What it does
 
@@ -72,13 +68,13 @@ statistics-only behaviour sets `mastery.bonuses.enabled` to `false`.
 ./gradlew build
 ```
 
-Artifacts land in `fabric/build/libs` and `neoforge/build/libs`.
+Artifacts land in `fabric/build/libs` and `forge/build/libs`.
 
 Development launches:
 
 ```bash
 ./gradlew :fabric:runClient
-./gradlew :neoforge:runClient
+./gradlew :forge:runClient
 ```
 
 Farmer's Delight is pulled in as a **runtime-only** dependency for those

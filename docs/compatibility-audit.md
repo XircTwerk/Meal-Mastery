@@ -2,7 +2,7 @@
 
 An overlap survey, run before the major features were built, so Meal Mastery
 ends up with a distinct identity instead of cloning something that already
-exists. Surveyed against Minecraft 1.21.1 availability.
+exists. Surveyed against Minecraft 1.20.1 availability.
 
 ## Mods with overlapping ideas
 
@@ -14,10 +14,10 @@ exists. Surveyed against Minecraft 1.21.1 availability.
 | **Diet** / **A Balanced Diet** / **Nutrition** | Food-group nutrition systems with real hunger/health consequences. | Food classification by group. | Meal Mastery classifies ingredients for *browsing and collections*, never for hunger mechanics. It also refuses to duplicate their tooltip sections. |
 | **AppleSkin** | Hunger/saturation HUD and tooltip overlays. | Food tooltips. | Meal Mastery's nutrition display is opt-in, informational, and suppressed by default when AppleSkin-style providers are present. |
 
-## Result: nothing in the ecosystem does this
+## Result: nothing in the 1.20.1 ecosystem does this
 
 A search of Modrinth for cooking-progression, recipe-mastery and food-journal
-mods turned up **no mod that tracks per-recipe mastery, recipe
+mods on 1.20.1 turned up **no mod that tracks per-recipe mastery, recipe
 discovery, ingredient journals or culinary collections for Farmer's Delight**.
 The closest thing is Project MMO's compat addon, which is a single XP number.
 

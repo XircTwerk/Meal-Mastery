@@ -5,7 +5,7 @@ import com.xirc.mealmastery.config.ConfigManager;
 import com.xirc.mealmastery.config.ServerConfig;
 import com.xirc.mealmastery.culinary.CulinaryProfile;
 import com.xirc.mealmastery.event.CulinaryEvents;
-import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -66,8 +66,7 @@ public final class ChallengeRewards {
     }
 
     private static void grantAdvancement(ServerPlayer player, ResourceLocation id) {
-        // 1.21 wraps advancements in a holder and renamed the lookup.
-        AdvancementHolder advancement = player.server.getAdvancements().get(id);
+        Advancement advancement = player.server.getAdvancements().getAdvancement(id);
         if (advancement == null) {
             MealMasteryLog.LOGGER.warn("Challenge reward names an unknown advancement: {}", id);
             return;

@@ -1,9 +1,7 @@
 plugins {
-    // Applied at the root so both ModDevGradle modules and IntelliJ's sync
-    // share one copy of each plugin. ModDevGradle is applied, not enabled, so
-    // :fabric can stay on Loom.
+    // Applied at the root so VanillaGradle (:common), ModDevGradle (:forge) and
+    // IntelliJ's sync all share one copy of idea-ext.
     id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.10'
-    id 'net.neoforged.moddev' version '2.0.95' apply false
 }
 
 subprojects {
@@ -29,17 +27,28 @@ subprojects {
             }
         }
         maven {
-            name = 'NeoForged'
-            url = 'https://maven.neoforged.net/releases/'
-        }
-        maven {
-            // Fabric ASM, which Farmer's Delight Refabricated bundles to extend
-            // the RecipeBookType enum. Development launches only; never on any
-            // compile path.
+            // Only for Fabric ASM, which Farmer's Delight Refabricated needs at
+            // runtime. Development launches only; never on any compile path.
             name = 'JitPack'
             url = 'https://jitpack.io'
             content {
                 includeGroup 'com.github.Chocohead'
+            }
+        }
+        maven {
+            // Porting Lib's individual modules, likewise development only.
+            name = 'devOs'
+            url = 'https://mvn.devos.one/releases'
+            content {
+                includeGroup 'io.github.fabricators_of_create.Porting-Lib'
+            }
+        }
+        maven {
+            // Reach Entity Attributes, pulled in transitively by Porting Lib.
+            name = 'JamiesWhiteShirt'
+            url = 'https://maven.jamieswhiteshirt.com/libs-release'
+            content {
+                includeGroup 'com.jamieswhiteshirt'
             }
         }
     }
