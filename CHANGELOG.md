@@ -3,9 +3,10 @@
 All notable changes to this project are documented here.
 
 This is the **1.21.1** branch (Fabric + NeoForge). For Minecraft 1.20.1
-(Fabric + Forge) see `main`.
+(Fabric + Forge) see the [`1.20.1`](https://github.com/XircTwerk/Meal-Mastery/tree/1.20.1)
+branch. There is no `main` branch: each Minecraft version is its own branch.
 
-## [Unreleased]
+## [1.0.0] - 2026-07-28
 
 ### Ported to Minecraft 1.21.1
 - Replaced the `forge` module with `neoforge`: Farmer's Delight has no Forge
@@ -37,9 +38,12 @@ This is the **1.21.1** branch (Fabric + NeoForge). For Minecraft 1.20.1
 - Journal search supporting bare terms and `field:term` selectors.
 - Audit report backing `/mealmastery audit`.
 - Server and client configuration with range validation, plus the five optional
-  presets. Defaults leave Farmer's Delight completely unchanged: cosmetic-only
-  mastery rewards, no automation credit, personal discovery, no leaderboards,
-  no HUD.
+  presets. Defaults never alter a Farmer's Delight recipe or a food item's own
+  stats: `mastery.rewards` is `COSMETIC_ONLY` (that setting shapes the XP side
+  only), no automation credit, personal discovery, no leaderboards, no HUD.
+  Note that `mastery.bonuses.enabled` *is* `true` by default, so mastery does
+  affect cooking speed, saturation and effects out of the box — see
+  `docs/configuration.md`.
 - Cooking attribution using three vanilla surfaces only: menu sessions, short
   interaction windows after using a workstation, and item drops inside those
   windows. Automation that cannot be attributed grants no credit.
@@ -70,6 +74,16 @@ This is the **1.21.1** branch (Fabric + NeoForge). For Minecraft 1.20.1
 - Recipe of the Day and generated daily challenges.
 - Optional opt-in leaderboards; compatibility report that never claims "Full".
 - Small public API and full English localisation.
+
+### Packaging
+- Licensed MIT.
+- A 256x256 `assets/mealmastery/icon.png` is shipped as the mod-list icon,
+  wired to `icon` in `fabric.mod.json` and `logoFile` in the NeoForge TOML.
+  This is the only image in the mod. It is loader-facing metadata, never
+  referenced by mod code and never rendered in game, so the no-in-game-art
+  rule is unchanged.
+- Loader metadata completed: `contact` (homepage, sources, issues) on Fabric;
+  `issueTrackerURL` and `displayURL` on NeoForge.
 
 ### Verified
 - 90 unit tests passing.

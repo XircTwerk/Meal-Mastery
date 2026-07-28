@@ -11,7 +11,7 @@ challenges and a culinary journal to [Farmer's Delight](https://modrinth.com/mod
 | Minecraft | 1.21.1 |
 | Loaders | Fabric, NeoForge |
 | Requires | Farmer's Delight |
-| Custom art assets | **zero** |
+| In-game art assets | **zero** (one mod-list icon, never rendered in game) |
 
 Minecraft 1.20.1 (Fabric, Forge) lives on the
 [`1.20.1`](https://github.com/XircTwerk/Meal-Mastery/tree/1.20.1) branch.

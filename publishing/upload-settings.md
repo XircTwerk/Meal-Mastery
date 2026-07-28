@@ -1,6 +1,6 @@
 # Per-file upload settings
 
-Four jars, one per branch/loader combination. All are version `0.1.0`.
+Four jars, one per branch/loader combination. All are version `1.0.0`.
 
 Values below come from `gradle.properties` on each branch. Do not widen a
 version range here that the jar metadata does not declare.
@@ -12,12 +12,12 @@ version range here that the jar metadata does not declare.
 | | |
 |---|---|
 | Branch | `1.20.1` |
-| Jar | `fabric/build/libs/mealmastery-fabric-1.20.1-0.1.0.jar` |
+| Jar | `fabric/build/libs/mealmastery-fabric-1.20.1-1.0.0.jar` |
 | Minecraft version | 1.20.1 |
 | Mod loader | Fabric |
 | Java | 17 |
-| Release channel | Beta |
-| Display name | Meal Mastery 0.1.0 — 1.20.1 Fabric |
+| Release channel | Release |
+| Display name | Meal Mastery 1.0.0 — 1.20.1 Fabric |
 
 Dependencies:
 
@@ -33,12 +33,12 @@ Dependencies:
 | | |
 |---|---|
 | Branch | `1.20.1` |
-| Jar | `forge/build/libs/mealmastery-forge-1.20.1-0.1.0.jar` |
+| Jar | `forge/build/libs/mealmastery-forge-1.20.1-1.0.0.jar` |
 | Minecraft version | 1.20.1 |
 | Mod loader | Forge |
 | Java | 17 |
-| Release channel | Beta |
-| Display name | Meal Mastery 0.1.0 — 1.20.1 Forge |
+| Release channel | Release |
+| Display name | Meal Mastery 1.0.0 — 1.20.1 Forge |
 
 Dependencies:
 
@@ -55,12 +55,12 @@ Forge loader range declared in the jar: `[47,)`.
 | | |
 |---|---|
 | Branch | `1.21.1` |
-| Jar | `fabric/build/libs/mealmastery-fabric-1.21.1-0.1.0.jar` |
+| Jar | `fabric/build/libs/mealmastery-fabric-1.21.1-1.0.0.jar` |
 | Minecraft version | 1.21.1 |
 | Mod loader | Fabric |
 | Java | 21 |
-| Release channel | Beta |
-| Display name | Meal Mastery 0.1.0 — 1.21.1 Fabric |
+| Release channel | Release |
+| Display name | Meal Mastery 1.0.0 — 1.21.1 Fabric |
 
 Dependencies:
 
@@ -76,12 +76,12 @@ Dependencies:
 | | |
 |---|---|
 | Branch | `1.21.1` |
-| Jar | `neoforge/build/libs/mealmastery-neoforge-1.21.1-0.1.0.jar` |
+| Jar | `neoforge/build/libs/mealmastery-neoforge-1.21.1-1.0.0.jar` |
 | Minecraft version | 1.21.1 |
 | Mod loader | NeoForge |
 | Java | 21 |
-| Release channel | Beta |
-| Display name | Meal Mastery 0.1.0 — 1.21.1 NeoForge |
+| Release channel | Release |
+| Display name | Meal Mastery 1.0.0 — 1.21.1 NeoForge |
 
 Dependencies:
 
@@ -96,9 +96,10 @@ NeoForge loader range declared in the jar: `[4,)`. There is no Forge build for
 
 ## Notes
 
-**Release channel.** Beta is suggested because 0.1.0 is the first public build
-and no version has been through outside testing. Both platforms let you promote
-later files to Release without touching these.
+**Release channel.** Release, matching the 1.0.0 version number — shipping a
+build called 1.0.0 under a Beta channel reads as a contradiction. If you would
+rather soft-launch, set all four to Beta and keep them consistent; both
+platforms let you promote files later.
 
 **Farmer's Delight is a required dependency on all four files.** The mod does
 not compile against it, but the loader metadata declares it mandatory, so the

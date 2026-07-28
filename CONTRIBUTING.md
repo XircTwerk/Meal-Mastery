@@ -16,9 +16,11 @@ Run the complete verification suite before submitting changes:
 1. **No compile-time dependency on Farmer's Delight.** Everything is resolved
    through vanilla registries, recipe types and tags. See
    `docs/architecture.md`.
-2. **No custom art assets.** No PNG, model, blockstate, animation, particle or
-   sound. UI is built from vanilla sprites, code-drawn shapes and item
-   rendering only.
+2. **No in-game art assets.** No model, blockstate, animation, particle, sound
+   or in-game texture. UI is built from vanilla sprites, code-drawn shapes and
+   item rendering only. The sole exception is the mod-list icon
+   (`assets/mealmastery/icon.png`), which the loader reads from the mod
+   metadata and which no mod code may reference or render.
 3. **No hardcoded per-addon database.** Do not add `if (modLoaded("x"))`
    branches for food addons. If something needs per-mod knowledge, it belongs
    in a datapack or in config.

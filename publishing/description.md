@@ -5,9 +5,10 @@ that turns cooking into progression. Every dish you prepare has its own mastery
 track, the food you cook is recorded in a culinary journal, and getting good at
 a recipe measurably changes what happens when you cook and eat it.
 
-It adds **no food, no items, no blocks, no textures, no models and no sounds.**
-Everything it displays is built from vanilla GUI sprites and items other mods
-already registered.
+It adds **no food, no items, no blocks, no in-game textures, no models and no
+sounds.** Everything it displays is built from vanilla GUI sprites and items
+other mods already registered. The only image it ships is its own mod-list
+icon.
 
 | | |
 |---|---|
