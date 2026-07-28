@@ -2,7 +2,11 @@
 
 All notable changes to this project are documented here.
 
-## [Unreleased]
+This is the **1.20.1** branch (Fabric + Forge). For Minecraft 1.21.1
+(Fabric + NeoForge) see the [`1.21.1`](https://github.com/XircTwerk/Meal-Mastery/tree/1.21.1)
+branch. There is no `main` branch: each Minecraft version is its own branch.
+
+## [1.0.0] - 2026-07-28
 
 ### Added
 - Multiloader project scaffold (Fabric + Forge + shared `common`) for Minecraft
@@ -83,3 +87,13 @@ All notable changes to this project are documented here.
 - Verified on a live Fabric dev server with Farmer's Delight installed:
   92 dishes from 140 eligible recipes across 2 mods in 16 ms, plus the shipped
   challenges, collections and milestones.
+
+### Packaging
+- Licensed MIT.
+- A 256x256 `assets/mealmastery/icon.png` is shipped as the mod-list icon,
+  wired to `icon` in `fabric.mod.json` and `logoFile` in the Forge TOML. This
+  is the only image in the mod. It is loader-facing metadata, never referenced
+  by mod code and never rendered in game, so the no-in-game-art rule is
+  unchanged.
+- Loader metadata completed: `contact` (homepage, sources, issues) on Fabric;
+  `issueTrackerURL` and `displayURL` on Forge.

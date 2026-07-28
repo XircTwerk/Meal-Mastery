@@ -81,11 +81,16 @@ automation) yields **no credit** by default. `AutomationCredit` may be relaxed
 to `OWNER_CREDIT` / `REDUCED_CREDIT` / `FULL_CREDIT` by a server, but ownership
 is never guessed.
 
-## Zero custom assets
+## Zero in-game assets
 
-No PNG, model, blockstate, sound or particle is added. Every UI surface is
-built from vanilla GUI sprites, code-drawn panels/gradients, text, and
-`ItemRenderer` calls against items that other mods already registered.
+No model, blockstate, sound, particle or in-game texture is added. Every UI
+surface is built from vanilla GUI sprites, code-drawn panels/gradients, text,
+and `ItemRenderer` calls against items that other mods already registered.
+
+The one image in the mod is `assets/mealmastery/icon.png` (256x256), the
+mod-list icon read by the loader from `icon` in `fabric.mod.json` and
+`logoFile` in the Forge TOML. It is packaging metadata: no mod code references
+it and nothing ever renders it in game.
 
 ## Fail-open rule
 

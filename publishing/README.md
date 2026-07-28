@@ -6,13 +6,17 @@ repo rather than living only in a web form.
 
 | File | Use |
 |---|---|
-| [`summary.txt`](summary.txt) | Short summary line. 133 characters; both platforms cap at 150 |
+| [`summary.txt`](summary.txt) | Short summary line. 135 characters; both platforms cap at 150 |
 | [`description.md`](description.md) | Full description body. Usable verbatim on both sites |
 | [`upload-settings.md`](upload-settings.md) | Per-file settings for each of the four jars |
 | [`categories-and-tags.md`](categories-and-tags.md) | Category and tag selections per platform |
 
-Both files are identical on the `1.20.1` and `1.21.1` branches — the listing
-covers both.
+All four files are identical on the `1.20.1` and `1.21.1` branches — one
+listing covers both Minecraft versions.
+
+The Modrinth project is
+[`farmers-delight-meal-mastery`](https://modrinth.com/project/farmers-delight-meal-mastery)
+(draft until a version is uploaded).
 
 ## Project logo
 

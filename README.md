@@ -11,7 +11,7 @@ challenges and a culinary journal to [Farmer's Delight](https://modrinth.com/mod
 | Minecraft | 1.20.1 |
 | Loaders | Fabric, Forge |
 | Requires | Farmer's Delight |
-| Custom art assets | **zero** |
+| In-game art assets | **zero** (one mod-list icon, never rendered in game) |
 
 ## What it does
 
