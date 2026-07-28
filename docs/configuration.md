@@ -65,7 +65,7 @@ Set `enabled: false` to remove the curve entirely.
 ### `mastery`
 
 `thresholds` is one entry per rank above *Unfamiliar* (default
-`[1, 10, 30, 75, 150]`, so the top rank is 150 preparations of one dish).
+`[2, 20, 60, 150, 300]`, so the top rank is 300 preparations of one dish).
 **Changing them never destroys earned points**; only the displayed rank
 re-derives.
 

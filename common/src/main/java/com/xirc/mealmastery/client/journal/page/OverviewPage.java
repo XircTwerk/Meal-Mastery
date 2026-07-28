@@ -1,8 +1,10 @@
 package com.xirc.mealmastery.client.journal.page;
 
 import com.xirc.mealmastery.client.ClientJournalState;
+import com.xirc.mealmastery.culinary.ActivityEntry;
 import com.xirc.mealmastery.client.journal.JournalText;
 import com.xirc.mealmastery.client.journal.JournalTheme;
+import com.xirc.mealmastery.mastery.MasteryRank;
 import com.xirc.mealmastery.network.Packets;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -245,10 +247,8 @@ public final class OverviewPage extends BasePage {
             if (cursorY + 10 > bottom()) {
                 return;
             }
-            Component subject = entry.subject() == null
-                    ? Component.empty() : JournalText.nameOf(entry.subject());
             Component line = Component.translatable(
-                    "mealmastery.activity." + entry.type(), subject);
+                    "mealmastery.activity." + entry.type(), argumentsFor(entry));
             for (var wrapped : font().split(line, right - columnX)) {
                 if (cursorY + 10 > bottom()) {
                     return;
@@ -295,4 +295,25 @@ public final class OverviewPage extends BasePage {
     public Component emptyMessage() {
         return Component.translatable("mealmastery.empty.activity");
     }
+
+    /**
+     * The arguments one activity line's format string expects.
+     *
+     * <p>Not every line is "something happened to this dish". A rank change
+     * names the rank as well, and a level-up has no subject at all — its number
+     * is in {@code detail}. Handing the subject to all of them left the raw
+     * "%s reached %s" on screen, because a format string with an argument
+     * missing renders as itself.</p>
+     */
+    private static Object[] argumentsFor(Packets.ActivityView entry) {
+        Component subject = entry.subject() == null
+                ? Component.empty() : JournalText.nameOf(entry.subject());
+        return switch (ActivityEntry.Type.byId(entry.type())) {
+            case MASTERY_RANK -> new Object[]{subject, Component.translatable(
+                    MasteryRank.byIndex((int) entry.detail()).translationKey())};
+            case LEVEL_UP -> new Object[]{entry.detail()};
+            default -> new Object[]{subject};
+        };
+    }
+
 }

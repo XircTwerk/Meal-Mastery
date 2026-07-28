@@ -23,7 +23,7 @@ already registered.
 
 Each recipe has an independent mastery track running from *Unfamiliar* to
 *Mastered*, advanced by preparing that specific dish. By default the top rank
-takes 150 preparations of one dish (thresholds `[1, 10, 30, 75, 150]`).
+takes 300 preparations of one dish (thresholds `[2, 20, 60, 150, 300]`).
 
 Mastery has mechanical effects, and they are **on by default**. Every value
 below is the default and every one is configurable:

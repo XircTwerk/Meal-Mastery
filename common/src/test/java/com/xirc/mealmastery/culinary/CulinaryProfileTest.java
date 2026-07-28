@@ -165,9 +165,10 @@ class CulinaryProfileTest {
         CulinaryProfile profile = populated();
         profile.meal(BEEF_STEW).discover(50L);
         profile.meal(BEEF_STEW).recordPreparation(50L, 200, CookingMethod.COOKING_POT);
-        profile.meal(BEEF_STEW).addMasteryPoints(200L);
-        // Roast chicken sits at 83 points, which is Expert on the default curve;
-        // only the stew has gone the full 150.
+        profile.meal(BEEF_STEW).addMasteryPoints(400L);
+        profile.meal(ROAST_CHICKEN).addMasteryPoints(100L);
+        // Roast chicken reaches 183 points, which is Expert on the default
+        // curve; only the stew has gone the full 300.
 
         assertEquals(2, profile.discoveredCount());
         assertEquals(2, profile.uniquePreparedCount());
