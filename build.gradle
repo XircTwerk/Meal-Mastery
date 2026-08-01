@@ -32,16 +32,6 @@ subprojects {
             name = 'NeoForged'
             url = 'https://maven.neoforged.net/releases/'
         }
-        maven {
-            // Fabric ASM, which Farmer's Delight Refabricated bundles to extend
-            // the RecipeBookType enum. Development launches only; never on any
-            // compile path.
-            name = 'JitPack'
-            url = 'https://jitpack.io'
-            content {
-                includeGroup 'com.github.Chocohead'
-            }
-        }
     }
 
     tasks.withType(JavaCompile).configureEach {

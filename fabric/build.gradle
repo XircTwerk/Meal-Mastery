@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.13.4'
+    id 'fabric-loom' version '1.16.3'
 }
 
 base {
@@ -17,13 +17,8 @@ dependencies {
     // because Farmer's Delight is a hard dependency of the shipped mod, so a
     // dev launch without it cannot start at all. Opt out with
     //     ./gradlew :fabric:runClient -Pdev_farmersdelight=false
-    // See gradle.properties for why the version is pinned below the latest.
     if (findProperty('dev_farmersdelight') != 'false') {
         modRuntimeOnly "maven.modrinth:farmers-delight-refabricated:${farmersdelight_fabric_version}"
-        // Loom does not unpack a mod dependency's nested jars, and Farmer's
-        // Delight needs this one to extend the RecipeBookType enum - without it
-        // the game crashes as soon as a world loads.
-        modRuntimeOnly "com.github.Chocohead:Fabric-ASM:${fabric_asm_version}"
     }
 
     compileOnly project(':common')

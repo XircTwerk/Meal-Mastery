@@ -66,7 +66,7 @@ Dependencies:
 
 | Project | Relation | Notes |
 |---|---|---|
-| Farmer's Delight Refabricated | **Required** | jar declares `>=1.21.1-3.0.0` |
+| Farmer's Delight Refabricated | **Required** | jar declares `>=1.21.1-3.3.3` |
 | Fabric API | **Required** | jar declares `*` |
 
 ---
@@ -87,7 +87,7 @@ Dependencies:
 
 | Project | Relation | Notes |
 |---|---|---|
-| Farmer's Delight | **Required** | jar declares `[1.21.1-1.2.0,)` |
+| Farmer's Delight | **Required** | jar declares `[1.3.2,)` |
 
 NeoForge loader range declared in the jar: `[4,)`. There is no Forge build for
 1.21.1 because Farmer's Delight has none.
