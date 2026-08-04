@@ -5,6 +5,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.AbstractFurnaceMenu;
+import net.minecraft.world.inventory.CraftingMenu;
+import net.minecraft.world.inventory.FurnaceResultSlot;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.ResultSlot;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
@@ -27,7 +34,8 @@ public final class CulinaryInventory {
     /**
      * Counts tracked dishes and tracked ingredients the player is holding,
      * including whatever is on the cursor so a stack picked up inside a menu is
-     * not mistaken for a loss.
+     * not mistaken for a loss, and whatever they have parked in the open menu's
+     * input slots.
      */
     public static Map<ResourceLocation, Integer> snapshot(ServerPlayer player,
                                                           CulinaryRegistry registry) {
@@ -36,9 +44,43 @@ public final class CulinaryInventory {
         for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
             add(counts, inventory.getItem(slot), registry);
         }
-        add(counts, player.containerMenu == null
-                ? ItemStack.EMPTY : player.containerMenu.getCarried(), registry);
+        AbstractContainerMenu menu = player.containerMenu;
+        add(counts, menu == null ? ItemStack.EMPTY : menu.getCarried(), registry);
+        addMenuInputs(counts, menu, registry);
         return counts;
+    }
+
+    /**
+     * Counts what is sitting in the open menu's own input slots.
+     *
+     * <p>Without this a crafting grid is a hole in the snapshot: putting a
+     * carrot into it reads as a loss and taking the same carrot back out reads
+     * as a gain, so shuffling one item in and out of a bench credits a fresh
+     * preparation every time, batch bonus and all. Counting the inputs makes
+     * that move net zero, while a real result — which arrives from a slot
+     * nothing can be placed into — still shows up as a gain.</p>
+     *
+     * <p>Only the menus the tracker recognises by class are read. A workstation
+     * identified by an interaction window keeps its finished dish in a slot of
+     * its own, and counting that would credit the dish the moment it appeared,
+     * to whoever happened to have the screen open rather than to whoever took
+     * it.</p>
+     */
+    private static void addMenuInputs(Map<ResourceLocation, Integer> counts,
+                                      AbstractContainerMenu menu, CulinaryRegistry registry) {
+        if (!(menu instanceof CraftingMenu || menu instanceof InventoryMenu
+                || menu instanceof AbstractFurnaceMenu)) {
+            return;
+        }
+        for (Slot slot : menu.slots) {
+            // The player's own slots are already counted, and an output slot is
+            // where a gain is supposed to come from.
+            if (slot.container instanceof Inventory || slot instanceof ResultSlot
+                    || slot instanceof FurnaceResultSlot) {
+                continue;
+            }
+            add(counts, slot.getItem(), registry);
+        }
     }
 
     private static void add(Map<ResourceLocation, Integer> counts, ItemStack stack,
