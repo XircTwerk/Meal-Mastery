@@ -6,7 +6,7 @@ This is the **1.21.1** branch (Fabric + NeoForge). For Minecraft 1.20.1
 (Fabric + Forge) see the [`1.20.1`](https://github.com/XircTwerk/Meal-Mastery/tree/1.20.1)
 branch. There is no `main` branch: each Minecraft version is its own branch.
 
-## [Unreleased]
+## [1.1.1] - 2026-08-04
 
 ### Fixed
 - Closed an exploit where moving a tracked item into a crafting grid or furnace
