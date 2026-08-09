@@ -105,6 +105,10 @@ public final class RecipeClassifier {
             slots = List.of();
         }
 
+        if (rules.isUnpacking(recipeTypeId, slots.size(), output.getCount())) {
+            return Classification.rejected(EligibilityRules.Verdict.EXCLUDED);
+        }
+
         return new Classification(EligibilityRules.Verdict.ELIGIBLE, new RecipeEntry(
                 recipeId,
                 recipeTypeId,

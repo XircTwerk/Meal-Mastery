@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    { "id": "cookingforblockheads:oven", "required": false },
+    { "id": "cookingforblockheads:cooking_table", "required": false },
+    { "id": "cookingforblockheads:toaster", "required": false }
+  ]
+}

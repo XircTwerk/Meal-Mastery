@@ -308,6 +308,13 @@ public final class ServerConfig {
         public int attributionWindowTicks = 20;
         @Comment("How close to the workstation a dropped item still counts, in blocks.")
         public double attributionRadius = 3.0;
+        @Comment({
+                "The same, for a workstation that cooks unattended - currently the",
+                "campfire, which takes thirty seconds and drops its result at the",
+                "block. Only items appearing at the workstation are credited during",
+                "this window, never a change in the player's inventory.",
+                "Range 1 - 12000."})
+        public int unattendedWindowTicks = 1200;
     }
 
     @Comment({
@@ -333,6 +340,14 @@ public final class ServerConfig {
         public List<String> requiredItemTags = new ArrayList<>();
         @Comment("Set false to accept recipes whose output is not food.")
         public boolean requireEdibleOutput = true;
+        @Comment({
+                "Ignore storage blocks being unpacked back into food.",
+                "A crate of potatoes crafted back into potatoes is one ingredient",
+                "in and nine of the same food out - not cooking, but otherwise",
+                "indistinguishable from it. Only vanilla crafting is affected, so",
+                "a cutting board turning one input into several portions still",
+                "counts."})
+        public boolean ignoreUnpackingRecipes = true;
         @Comment({
                 "Whether vanilla recipes earn mastery.",
                 "On by default: bread and a baked potato are cooking too. Set false",
@@ -480,6 +495,8 @@ public final class ServerConfig {
                 "automation.reducedCreditMultiplier", issues);
         automation.attributionWindowTicks = clamp(automation.attributionWindowTicks, 1, 200,
                 "automation.attributionWindowTicks", issues);
+        automation.unattendedWindowTicks = clamp(automation.unattendedWindowTicks, 1, 12_000,
+                "automation.unattendedWindowTicks", issues);
         automation.attributionRadius = clamp(automation.attributionRadius, 0.5, 16.0,
                 "automation.attributionRadius", issues);
 

@@ -36,6 +36,7 @@ public final class EligibilityRules {
     private final List<TagKey<Item>> deniedTags;
     private final Set<ResourceLocation> deniedRecipeTypes;
     private final boolean requireEdibleOutput;
+    private final boolean ignoreUnpacking;
 
     private EligibilityRules(Builder builder) {
         this.allowedRecipes = Set.copyOf(builder.allowedRecipes);
@@ -48,6 +49,7 @@ public final class EligibilityRules {
         this.deniedTags = List.copyOf(builder.deniedTags);
         this.deniedRecipeTypes = Set.copyOf(builder.deniedRecipeTypes);
         this.requireEdibleOutput = builder.requireEdibleOutput;
+        this.ignoreUnpacking = builder.ignoreUnpacking;
     }
 
     public enum Verdict {
@@ -56,6 +58,27 @@ public final class EligibilityRules {
         EXCLUDED,
         /** Structurally not a dish — no edible output. The overwhelmingly common case. */
         NOT_FOOD
+    }
+
+    /**
+     * Whether a recipe is a storage block being opened rather than a meal.
+     *
+     * <p>A crate of potatoes crafted back into potatoes produces food from a
+     * crafting recipe, which is indistinguishable from cooking by output alone
+     * — it was being credited as nine preparations. The shape gives it away:
+     * one ingredient in, several of the same food out. Nothing anyone would
+     * call cooking has that shape, and restricting the rule to vanilla's
+     * crafting type keeps it away from cutting boards, where one input
+     * legitimately yields several portions.</p>
+     */
+    public boolean isUnpacking(ResourceLocation recipeTypeId, int distinctIngredients,
+                               int outputCount) {
+        return ignoreUnpacking
+                && outputCount > 1
+                && distinctIngredients == 1
+                && recipeTypeId != null
+                && "minecraft".equals(recipeTypeId.getNamespace())
+                && "crafting".equals(recipeTypeId.getPath());
     }
 
     public Verdict evaluate(ResourceLocation recipeId,
@@ -144,6 +167,7 @@ public final class EligibilityRules {
         private final List<TagKey<Item>> deniedTags = new java.util.ArrayList<>();
         private final Set<ResourceLocation> deniedRecipeTypes = new LinkedHashSet<>();
         private boolean requireEdibleOutput = true;
+        private boolean ignoreUnpacking = true;
 
         public Builder allowRecipe(ResourceLocation id) {
             allowedRecipes.add(id);
@@ -187,6 +211,11 @@ public final class EligibilityRules {
 
         public Builder denyRecipeType(ResourceLocation id) {
             deniedRecipeTypes.add(id);
+            return this;
+        }
+
+        public Builder ignoreUnpacking(boolean ignore) {
+            this.ignoreUnpacking = ignore;
             return this;
         }
 

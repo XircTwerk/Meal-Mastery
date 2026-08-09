@@ -39,6 +39,7 @@ public final class PlayerTracking {
     private BlockPos windowPos;
     private CookingMethod windowMethod;
     private long windowExpiresAtTick = Long.MIN_VALUE;
+    private boolean windowDropOnly;
 
     public boolean hasMenuSession() {
         return menuId != -1;
@@ -89,19 +90,38 @@ public final class PlayerTracking {
         return workstationMethod;
     }
 
+    public boolean windowIsDropOnly() {
+        return windowDropOnly;
+    }
+
     public void beginWindow(BlockPos pos, CookingMethod method, long expiresAtTick,
                             Map<ResourceLocation, Integer> baseline) {
+        beginWindow(pos, method, expiresAtTick, baseline, false);
+    }
+
+    /**
+     * @param dropOnly credit only items that appear in the world at this
+     *                 workstation, never a change in the player's inventory.
+     *                 A campfire cooks unattended for thirty seconds, so its
+     *                 window has to stay open far longer than a menu's — long
+     *                 enough that diffing the inventory over it would credit
+     *                 anything the player happened to pick up meanwhile.
+     */
+    public void beginWindow(BlockPos pos, CookingMethod method, long expiresAtTick,
+                            Map<ResourceLocation, Integer> baseline, boolean dropOnly) {
         this.workstationPos = pos;
         this.workstationMethod = method;
         this.windowPos = pos;
         this.windowMethod = method;
         this.windowExpiresAtTick = expiresAtTick;
+        this.windowDropOnly = dropOnly;
         this.baseline = baseline;
         creditedThisSession.clear();
         consumedIngredients.clear();
     }
 
     public void endWindow() {
+        windowDropOnly = false;
         windowPos = null;
         windowMethod = null;
         windowExpiresAtTick = Long.MIN_VALUE;

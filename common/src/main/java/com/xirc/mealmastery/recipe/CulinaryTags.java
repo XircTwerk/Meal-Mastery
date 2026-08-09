@@ -38,4 +38,17 @@ public final class CulinaryTags {
     public static final TagKey<Item> SERVING_CONTAINERS = item("farmersdelight", "serving_containers");
 
     public static final TagKey<Block> FEAST_BLOCKS = block("farmersdelight", "feasts");
+
+    /**
+     * Blocks treated as cooking workstations.
+     *
+     * <p>The extension point for any mod with a workstation of its own —
+     * Cooking for Blockheads' oven and cooking table, a kitchen from a pack, an
+     * addon nobody has written yet. A datapack adds an entry and it works; no
+     * code here has to learn what that mod is.</p>
+     *
+     * <p>Mods that reuse Farmer's Delight's blocks need no entry at all: the
+     * generic recipe detection already found their dishes.</p>
+     */
+    public static final TagKey<Block> WORKSTATION_BLOCKS = block("mealmastery", "workstations");
 }

@@ -150,7 +150,10 @@ public final class CookingTracker {
         }
 
         if (state.windowPos() != null) {
-            settle(player, state, registry, CulinaryCredit.Source.INTERACTION, state.windowMethod());
+            if (!state.windowIsDropOnly()) {
+                settle(player, state, registry, CulinaryCredit.Source.INTERACTION,
+                        state.windowMethod());
+            }
             com.xirc.mealmastery.progression.CookingSpeed.tick(player, state.windowPos(),
                     state.windowMethod(), null);
             if (!state.hasWindow(tick)) {
@@ -245,9 +248,16 @@ public final class CookingTracker {
             // A menu session is already watching this player's inventory.
             return;
         }
+        // A campfire cooks slowly and unattended, and always drops its result
+        // as an item at the block. It needs a window long enough to still be
+        // open when that happens, and one that credits nothing else meanwhile.
+        boolean unattended = CookingMethod.CAMPFIRE.equals(method);
+        int ticks = unattended
+                ? config.automation.unattendedWindowTicks
+                : config.automation.attributionWindowTicks;
         tracking.beginWindow(pos.immutable(), method,
-                player.server.getTickCount() + config.automation.attributionWindowTicks,
-                CulinaryInventory.snapshot(player, registry));
+                player.server.getTickCount() + ticks,
+                CulinaryInventory.snapshot(player, registry), unattended);
     }
 
     /** Called when an item entity is added to a server level. */

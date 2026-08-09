@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EligibilityRulesTest {
     private static final ResourceLocation RECIPE =
@@ -73,6 +75,33 @@ class EligibilityRulesTest {
                 rules.evaluate(RECIPE, COOKING_TYPE, ADDON_DISH, true, NO_TAGS));
         assertEquals(EligibilityRules.Verdict.ELIGIBLE,
                 rules.evaluate(RECIPE, COOKING_TYPE, BEEF_STEW, true, NO_TAGS));
+    }
+
+    @Test
+    void unpackingAStorageBlockIsNotCooking() {
+        // Nine potatoes out of a crate: one ingredient in, several of the same
+        // food out. Quark, Farmer's Delight and Farm and Charm all ship these,
+        // and every one of them was being credited as nine preparations.
+        assertTrue(EligibilityRules.DEFAULT.isUnpacking(CRAFTING_TYPE, 1, 9));
+        assertTrue(EligibilityRules.DEFAULT.isUnpacking(CRAFTING_TYPE, 1, 4));
+    }
+
+    @Test
+    void realCookingIsNotMistakenForUnpacking() {
+        // One input, one output: an ordinary recipe.
+        assertFalse(EligibilityRules.DEFAULT.isUnpacking(CRAFTING_TYPE, 1, 1));
+        // Several inputs: a dish, however many portions it makes.
+        assertFalse(EligibilityRules.DEFAULT.isUnpacking(CRAFTING_TYPE, 3, 4));
+        // A cutting board legitimately turns one input into several portions,
+        // so the rule deliberately stops at vanilla crafting.
+        assertFalse(EligibilityRules.DEFAULT.isUnpacking(CUTTING_TYPE, 1, 4));
+        assertFalse(EligibilityRules.DEFAULT.isUnpacking(COOKING_TYPE, 1, 4));
+    }
+
+    @Test
+    void unpackingDetectionCanBeTurnedOff() {
+        EligibilityRules permissive = EligibilityRules.builder().ignoreUnpacking(false).build();
+        assertFalse(permissive.isUnpacking(CRAFTING_TYPE, 1, 9));
     }
 
     @Test
