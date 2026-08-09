@@ -11,10 +11,10 @@ import net.minecraft.world.level.block.Block;
  * referencing anyone's code.
  *
  * <p>Every tag here is optional. A tag that no installed mod populates simply
- * matches nothing, which is why the same constant list works whether Farmer's
- * Delight, its Forge {@code forge:} tags or the Fabric port's {@code c:} tags
- * are the ones present — the audit found the Fabric build ships both
- * namespaces, the Forge build only {@code forge:}.</p>
+ * matches nothing, so the same constant list works on both loaders. On 1.21
+ * that is easy: the {@code forge:} namespace is gone and NeoForge and Fabric
+ * both populate the {@code c:} conventional tags, as the audit of the two
+ * Farmer's Delight builds confirmed.</p>
  */
 public final class CulinaryTags {
     private CulinaryTags() {
@@ -38,4 +38,17 @@ public final class CulinaryTags {
     public static final TagKey<Item> SERVING_CONTAINERS = item("farmersdelight", "serving_containers");
 
     public static final TagKey<Block> FEAST_BLOCKS = block("farmersdelight", "feasts");
+
+    /**
+     * Blocks treated as cooking workstations.
+     *
+     * <p>The extension point for any mod with a workstation of its own —
+     * Cooking for Blockheads' oven and cooking table, a kitchen from a pack, an
+     * addon nobody has written yet. A datapack adds an entry and it works; no
+     * code here has to learn what that mod is.</p>
+     *
+     * <p>Mods that reuse Farmer's Delight's blocks need no entry at all: the
+     * generic recipe detection already found their dishes.</p>
+     */
+    public static final TagKey<Block> WORKSTATION_BLOCKS = block("mealmastery", "workstations");
 }

@@ -207,7 +207,8 @@ public final class ConfigManager {
      */
     public static EligibilityRules toEligibilityRules(ServerConfig config) {
         EligibilityRules.Builder builder = EligibilityRules.builder()
-                .requireEdibleOutput(config.compatibility.requireEdibleOutput);
+                .requireEdibleOutput(config.compatibility.requireEdibleOutput)
+                .ignoreUnpacking(config.compatibility.ignoreUnpackingRecipes);
 
         for (String raw : config.compatibility.excludedRecipeTypes) {
             parseId(raw, "excludedRecipeTypes").ifPresent(builder::denyRecipeType);

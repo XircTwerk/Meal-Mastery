@@ -148,6 +148,11 @@ tag @s add mealmastery_leaderboard
 after using a workstation, and how close to it, a gain is still credited. Short
 on purpose: longer windows start crediting coincidences.
 
+`unattendedWindowTicks` (1200) is the campfire's version. A campfire cooks for
+thirty seconds with no screen open, so its window has to outlast that — and
+because a window that long would otherwise credit anything picked up meanwhile,
+only items appearing at the block itself count during it.
+
 ### `compatibility`
 
 The escape hatches for eligibility. The default rule is structural — a recipe
@@ -170,6 +175,7 @@ addons; it leaves every other mod untouched.
 | `requiredItemTags` | a dish must carry one of these tags |
 | `requireEdibleOutput` | set `false` to accept non-food outputs |
 | `extraWorkstationBlocks` | `"modid:block"` or `"modid:block=modid:method"` |
+| `ignoreUnpackingRecipes` | ignore storage blocks unpacked back into food |
 
 Unparseable ids are reported in the log rather than silently ignored.
 

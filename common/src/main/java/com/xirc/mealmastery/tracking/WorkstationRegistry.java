@@ -22,9 +22,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * generic detection in {@code CulinaryRegistry} already picked up their
  * recipes.</p>
  *
- * <p>Addons with a genuinely unique workstation extend this through the public
- * API or the {@code compatibility.extraWorkstationBlocks} config list, never by
- * a code change here.</p>
+ * <p>Addons with a genuinely unique workstation extend this through the
+ * {@code mealmastery:workstations} block tag, the public API, or the
+ * {@code compatibility.extraWorkstationBlocks} config list — never by a code
+ * change here.</p>
  */
 public final class WorkstationRegistry {
 
@@ -43,6 +44,11 @@ public final class WorkstationRegistry {
         map.put(new ResourceLocation(fd, "cutting_board"), CookingMethod.CUTTING_BOARD);
         map.put(new ResourceLocation(fd, "skillet"), CookingMethod.of(fd, "skillet"));
         map.put(new ResourceLocation(fd, "stove"), CookingMethod.of(fd, "stove"));
+        // Vanilla's only cooking block without a screen. Everything else -
+        // furnace, smoker, crafting table - is recognised by its menu instead,
+        // which is why a campfire counted for nothing until it was listed here.
+        map.put(new ResourceLocation("campfire"), CookingMethod.CAMPFIRE);
+        map.put(new ResourceLocation("soul_campfire"), CookingMethod.CAMPFIRE);
         return map;
     }
 
@@ -64,6 +70,12 @@ public final class WorkstationRegistry {
         // one with a bowl hands the player a portion.
         if (state.is(CulinaryTags.FEAST_BLOCKS)) {
             return CookingMethod.FEAST_SERVING;
+        }
+        // Anything a datapack has named. UNKNOWN because the tag carries no
+        // method; that credits mastery for the dish without claiming to know
+        // how the block cooked it.
+        if (state.is(CulinaryTags.WORKSTATION_BLOCKS)) {
+            return CookingMethod.UNKNOWN;
         }
         return null;
     }

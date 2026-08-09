@@ -101,15 +101,23 @@ public final class CookingRewards {
                 remaining -= stack.getCount();
                 continue;
             }
-            // Split: only the newly cooked portion carries the stamp.
+            // Split: only the newly cooked portion carries the stamp. Placed
+            // straight into a free slot rather than handed to Inventory#add,
+            // which other mods hook as a pickup - synthesising one in the
+            // middle of a craft invites them to react to it twice.
+            int free = inventory.getFreeSlot();
+            if (free < 0) {
+                // Nowhere to put it. Leaving the stack unstamped costs the
+                // player a star on this batch; inventing an item movement
+                // could cost them the items.
+                break;
+            }
             ItemStack stamped = stack.copy();
             stamped.setCount(remaining);
             stamp.write(stamped);
             stack.shrink(remaining);
+            inventory.setItem(free, stamped);
             remaining = 0;
-            if (!inventory.add(stamped)) {
-                player.drop(stamped, false);
-            }
         }
         consolidate(inventory, item);
     }

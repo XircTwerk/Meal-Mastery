@@ -2,7 +2,7 @@
 
 An overlap survey, run before the major features were built, so Meal Mastery
 ends up with a distinct identity instead of cloning something that already
-exists. Surveyed against Minecraft 1.20.1 availability.
+exists. Surveyed against Minecraft 1.21.1 availability.
 
 ## Mods with overlapping ideas
 
@@ -14,10 +14,10 @@ exists. Surveyed against Minecraft 1.20.1 availability.
 | **Diet** / **A Balanced Diet** / **Nutrition** | Food-group nutrition systems with real hunger/health consequences. | Food classification by group. | Meal Mastery classifies ingredients for *browsing and collections*, never for hunger mechanics. It also refuses to duplicate their tooltip sections. |
 | **AppleSkin** | Hunger/saturation HUD and tooltip overlays. | Food tooltips. | Meal Mastery's nutrition display is opt-in, informational, and suppressed by default when AppleSkin-style providers are present. |
 
-## Result: nothing in the 1.20.1 ecosystem does this
+## Result: nothing in the ecosystem does this
 
 A search of Modrinth for cooking-progression, recipe-mastery and food-journal
-mods on 1.20.1 turned up **no mod that tracks per-recipe mastery, recipe
+mods turned up **no mod that tracks per-recipe mastery, recipe
 discovery, ingredient journals or culinary collections for Farmer's Delight**.
 The closest thing is Project MMO's compat addon, which is a single XP number.
 
@@ -55,3 +55,33 @@ Storage Delight, Autochef's Delight, Farmer's Knives.
 
 **No per-addon code was written for any of them**, and none is referenced by id
 anywhere in the mod.
+
+## Adding a workstation
+
+A mod with a cooking block of its own — Cooking for Blockheads' oven and
+cooking table, a modpack's custom kitchen — is added by datapack, with no code
+change and no release:
+
+```json
+// data/<yourpack>/tags/blocks/workstations.json     (1.20.1)
+// data/<yourpack>/tags/blocks/workstations.json     (1.20.1)
+{
+  "replace": false,
+  "values": [
+    { "id": "somemod:some_oven", "required": false }
+  ]
+}
+```
+
+`required: false` means the entry is skipped when that mod is absent rather
+than erroring, so one file is safe to ship for a whole pack.
+
+Meal Mastery's own copy of this tag lists Cooking for Blockheads, so its oven,
+cooking table and toaster work on install. `compatibility.extraWorkstationBlocks`
+does the same job from the server config, and the public API does it from code.
+
+Blocks that need no entry: anything reusing Farmer's Delight's workstations
+(the generic recipe detection already found those dishes), and anything with a
+vanilla-style menu — furnace, smoker and crafting table are recognised by their
+screen. Blast furnaces are excluded deliberately: blasting produces no food, so
+a pack that turns blasted food into charcoal is correctly earning nothing.

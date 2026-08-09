@@ -37,6 +37,16 @@ class ServerConfigTest {
     }
 
     @Test
+    void campfireAttributionIsLongEnoughToOutlastTheCooking() {
+        // A campfire takes 600 ticks. A window of 20, which is right for a
+        // menu, expires long before the food ever appears.
+        ServerConfig config = new ServerConfig();
+        assertTrue(config.automation.unattendedWindowTicks >= 600,
+                "the window must outlast a campfire's cook time");
+        assertTrue(config.compatibility.ignoreUnpackingRecipes);
+    }
+
+    @Test
     void nonsenseValuesAreClampedRatherThanRejected() {
         ServerConfig config = new ServerConfig();
         config.progression.xpMultiplier = -4.0;
