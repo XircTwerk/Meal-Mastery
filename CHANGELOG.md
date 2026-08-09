@@ -6,6 +6,46 @@ This is the **1.21.1** branch (Fabric + NeoForge). For Minecraft 1.20.1
 (Fabric + Forge) see the [`1.20.1`](https://github.com/XircTwerk/Meal-Mastery/tree/1.20.1)
 branch. There is no `main` branch: each Minecraft version is its own branch.
 
+## [1.1.2] - 2026-08-09
+
+### Added
+- Campfires now count as cooking. Every other cooking block is recognised by
+  its screen — furnace, smoker and crafting table all have one — and a campfire
+  has none, so it was never treated as a workstation at all. Cooking on one now
+  earns mastery, XP and discovery like anywhere else.
+- Workstations are now a block tag, `mealmastery:workstations`. Any mod or pack
+  with a cooking block of its own is added by datapack, with no code change and
+  no release. Entries use `required: false`, so one file is safe to ship for a
+  whole pack whether or not the mod is installed.
+- Cooking for Blockheads works on install: its oven, cooking table and toaster
+  are listed in the mod's own copy of that tag. Crafting and cooking in them
+  previously earned nothing, because a non-vanilla screen only counted if the
+  player had opened it from a workstation Meal Mastery already knew.
+- `automation.unattendedWindowTicks` (1200), the attribution window for a
+  workstation that cooks unattended. A campfire takes thirty seconds, where the
+  existing twenty-tick window expired before the food existed. Only items
+  appearing at the block itself are credited during it, so the longer window
+  cannot credit something picked up meanwhile.
+- `compatibility.ignoreUnpackingRecipes` (on by default).
+
+### Fixed
+- Crafting a storage block back into the food it holds no longer pays out.
+  Nine potatoes out of a sack or crate was being credited as nine preparations;
+  Quark, Farmer's Delight and Farm and Charm all ship recipes of this shape.
+  One ingredient in and several of the same food out is not a shape any cooking
+  has. Restricted to vanilla crafting, so a cutting board turning one input
+  into several portions still counts.
+- Stamping a partly-cooked stack no longer routes through `Inventory#add`.
+  Splitting a stack to stamp only the newly cooked portion was synthesising an
+  inventory insert in the middle of a craft, which mods that hook item pickups
+  can observe as a second event. The stamped portion is placed directly into a
+  free slot instead, and when there is no free slot the batch stays unstamped
+  rather than moving items to force it.
+
+### Unchanged
+- Blast furnaces remain excluded. Blasting produces no food, so a pack that
+  turns blasted food into charcoal or nuggets correctly earns nothing from it.
+
 ## [1.1.1] - 2026-08-04
 
 ### Fixed
