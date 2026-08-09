@@ -79,7 +79,10 @@ counts fully, the next four at 75%, the next ten at 50%, everything after at a
 20% floor. The floor is not zero: repetition should be worth less, not
 worthless.
 
-Cooking one cheap dish ten thousand times is intentionally a bad strategy.
+Cooking one cheap dish ten thousand times is intentionally a bad strategy, and
+neither is unpacking a crate: a storage block crafted back into the food it
+holds is one ingredient in and several of the same item out, which is not a
+shape any cooking has. It earns nothing.
 
 ## Challenges, collections and milestones
 
@@ -119,10 +122,28 @@ register ordinary recipes producing ordinary food.
 Farmer's Delight itself is still required to install and run Meal Mastery.
 
 **Vanilla recipes count too, by default.** Bread, a baked potato and anything
-out of a smoker earn mastery on the same terms as a Farmer's Delight stew, and
-the journal lists them. A pack that wants the journal to be about its food
-addons only sets `compatibility.trackVanillaRecipes` to `false`, which turns off
-the whole `minecraft` namespace in one go and leaves every other mod untouched.
+out of a furnace, smoker or campfire earn mastery on the same terms as a
+Farmer's Delight stew, and the journal lists them. A pack that wants the journal
+to be about its food addons only sets `compatibility.trackVanillaRecipes` to
+`false`, which turns off the whole `minecraft` namespace in one go and leaves
+every other mod untouched.
+
+**A mod with its own kitchen block is a datapack file.** Blocks that reuse
+Farmer's Delight's workstations, or that open an ordinary furnace or crafting
+screen, are already recognised. Anything else — Cooking for Blockheads' oven and
+cooking table, a pack's bespoke kitchen — is added to the
+`mealmastery:workstations` block tag and works immediately:
+
+```json
+// data/<yourpack>/tags/block/workstations.json      (1.21.1)
+// data/<yourpack>/tags/blocks/workstations.json     (1.20.1)
+{ "replace": false, "values": [ { "id": "somemod:some_oven", "required": false } ] }
+```
+
+`required: false` means an absent mod is skipped rather than erroring, so one
+file is safe to ship for a whole pack. Cooking for Blockheads is listed in the
+mod's own copy of that tag, so it works on install with no setup.
+`compatibility.extraWorkstationBlocks` does the same job from the server config.
 
 `/mealmastery debug` reports what the mod thinks about the item in your hand,
 which is the fastest way to find out why a given addon's food is or is not in
@@ -180,9 +201,10 @@ one only rewrites configuration; it cannot touch a player profile.
 
 There is a small public API (`MealMasteryApi`) for the two cases generic
 detection cannot reach: registering a workstation that neither opens a menu nor
-drops its output, and awarding cooking credit directly. Most mods need none of
-it — a food addon registering ordinary recipes is already fully supported with
-zero integration code.
+drops its output, and awarding cooking credit directly. A workstation is usually
+better added through the `mealmastery:workstations` block tag, which needs no
+code and no dependency at all. Most mods need neither — a food addon registering
+ordinary recipes is already fully supported with zero integration code.
 
 Meal Mastery is not a kitchen framework and will not become a mandatory
 dependency. There is no way to register a food, a recipe, a workstation menu or
