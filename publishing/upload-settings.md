@@ -1,7 +1,7 @@
 # Per-file upload settings
 
 Four jars, one per branch/loader combination. The 1.20.1 files are version
-`1.0.1`; the 1.21.1 files are version `1.1.1`.
+`1.0.2`; the 1.21.1 files are version `1.1.2`.
 
 Values below come from `gradle.properties` on each branch. Do not widen a
 version range here that the jar metadata does not declare.
@@ -13,12 +13,12 @@ version range here that the jar metadata does not declare.
 | | |
 |---|---|
 | Branch | `1.20.1` |
-| Jar | `fabric/build/libs/mealmastery-fabric-1.20.1-1.0.1.jar` |
+| Jar | `fabric/build/libs/mealmastery-fabric-1.20.1-1.0.2.jar` |
 | Minecraft version | 1.20.1 |
 | Mod loader | Fabric |
 | Java | 17 |
 | Release channel | Release |
-| Display name | Meal Mastery 1.0.1 — 1.20.1 Fabric |
+| Display name | Meal Mastery 1.0.2 — 1.20.1 Fabric |
 
 Dependencies:
 
@@ -34,12 +34,12 @@ Dependencies:
 | | |
 |---|---|
 | Branch | `1.20.1` |
-| Jar | `forge/build/libs/mealmastery-forge-1.20.1-1.0.1.jar` |
+| Jar | `forge/build/libs/mealmastery-forge-1.20.1-1.0.2.jar` |
 | Minecraft version | 1.20.1 |
 | Mod loader | Forge |
 | Java | 17 |
 | Release channel | Release |
-| Display name | Meal Mastery 1.0.1 — 1.20.1 Forge |
+| Display name | Meal Mastery 1.0.2 — 1.20.1 Forge |
 
 Dependencies:
 
@@ -56,18 +56,18 @@ Forge loader range declared in the jar: `[47,)`.
 | | |
 |---|---|
 | Branch | `1.21.1` |
-| Jar | `fabric/build/libs/mealmastery-fabric-1.21.1-1.1.1.jar` |
+| Jar | `fabric/build/libs/mealmastery-fabric-1.21.1-1.1.2.jar` |
 | Minecraft version | 1.21.1 |
 | Mod loader | Fabric |
 | Java | 21 |
 | Release channel | Release |
-| Display name | Meal Mastery 1.1.1 — 1.21.1 Fabric |
+| Display name | Meal Mastery 1.1.2 — 1.21.1 Fabric |
 
 Dependencies:
 
 | Project | Relation | Notes |
 |---|---|---|
-| Farmer's Delight Refabricated | **Required** | jar declares `>=1.21.1-3.0.0` |
+| Farmer's Delight Refabricated | **Required** | jar declares `>=1.21.1-3.3.3` |
 | Fabric API | **Required** | jar declares `*` |
 
 ---
@@ -77,18 +77,18 @@ Dependencies:
 | | |
 |---|---|
 | Branch | `1.21.1` |
-| Jar | `neoforge/build/libs/mealmastery-neoforge-1.21.1-1.1.1.jar` |
+| Jar | `neoforge/build/libs/mealmastery-neoforge-1.21.1-1.1.2.jar` |
 | Minecraft version | 1.21.1 |
 | Mod loader | NeoForge |
 | Java | 21 |
 | Release channel | Release |
-| Display name | Meal Mastery 1.1.1 — 1.21.1 NeoForge |
+| Display name | Meal Mastery 1.1.2 — 1.21.1 NeoForge |
 
 Dependencies:
 
 | Project | Relation | Notes |
 |---|---|---|
-| Farmer's Delight | **Required** | jar declares `[1.21.1-1.2.0,)` |
+| Farmer's Delight | **Required** | jar declares `[1.3.2,)` |
 
 NeoForge loader range declared in the jar: `[4,)`. There is no Forge build for
 1.21.1 because Farmer's Delight has none.
