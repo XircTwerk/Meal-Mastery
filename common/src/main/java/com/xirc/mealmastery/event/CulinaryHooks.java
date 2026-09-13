@@ -1,13 +1,17 @@
 package com.xirc.mealmastery.event;
 
+import com.xirc.mealmastery.recipe.CookingMethod;
 import com.xirc.mealmastery.tracking.CookingTracker;
 import com.xirc.mealmastery.tracking.EatingTracker;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Collection;
 
 /**
  * Single entry point every loader-specific hook funnels into.
@@ -38,6 +42,13 @@ public final class CulinaryHooks {
     /** Fired when an item entity is added to a server level. */
     public static void onItemEntitySpawned(ItemEntity entity) {
         CookingTracker.onItemEntitySpawned(entity);
+    }
+
+    /** Fired for an exact preparation action exposed by an optional menu integration. */
+    public static void onMenuPreparation(ServerPlayer player, ItemStack stack,
+                                         CookingMethod method,
+                                         Collection<ResourceLocation> usedIngredients) {
+        CookingTracker.onMenuPreparation(player, stack, method, usedIngredients);
     }
 
     /** Fired at the end of every server tick. */

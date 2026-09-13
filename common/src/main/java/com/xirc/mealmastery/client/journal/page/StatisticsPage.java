@@ -35,12 +35,12 @@ public final class StatisticsPage extends BasePage {
         sectionTitle(graphics, Component.translatable("mealmastery.page.statistics"), cursorY);
         cursorY += 16;
 
-        cursorY = row(graphics, cursorY, "Meals prepared", ClientJournalState.mealsPrepared());
-        cursorY = row(graphics, cursorY, "Meals personally eaten", ClientJournalState.mealsEaten());
-        cursorY = row(graphics, cursorY, "Portions served", ClientJournalState.portionsServed());
-        cursorY = row(graphics, cursorY, "Unique recipes", ClientJournalState.discoveredCount());
-        cursorY = row(graphics, cursorY, "Mastered recipes", ClientJournalState.masteredCount());
-        cursorY = row(graphics, cursorY, "Ingredients used",
+        cursorY = row(graphics, cursorY, "mealmastery.statistics.prepared", ClientJournalState.mealsPrepared());
+        cursorY = row(graphics, cursorY, "mealmastery.statistics.eaten", ClientJournalState.mealsEaten());
+        cursorY = row(graphics, cursorY, "mealmastery.statistics.served", ClientJournalState.portionsServed());
+        cursorY = row(graphics, cursorY, "mealmastery.statistics.unique", ClientJournalState.discoveredCount());
+        cursorY = row(graphics, cursorY, "mealmastery.statistics.mastered", ClientJournalState.masteredCount());
+        cursorY = row(graphics, cursorY, "mealmastery.statistics.ingredients",
                 ClientJournalState.ingredientsDiscovered());
 
         for (Packets.MethodView method : ClientJournalState.methods()) {
@@ -60,7 +60,7 @@ public final class StatisticsPage extends BasePage {
     }
 
     private void renderNutritionList(GuiGraphics graphics, int cursorY) {
-        sectionTitle(graphics, Component.literal("Highest nutrition, discovered"), cursorY);
+        sectionTitle(graphics, Component.translatable("mealmastery.statistics.highest_nutrition"), cursorY);
         cursorY += 14;
 
         List<Packets.DishView> best = ClientJournalState.dishes().stream()
@@ -87,7 +87,7 @@ public final class StatisticsPage extends BasePage {
         if (cursorY + 10 > bottom()) {
             return cursorY;
         }
-        JournalTheme.row(graphics, font(), Component.literal(label),
+        JournalTheme.row(graphics, font(), Component.translatable(label),
                 Component.literal(JournalText.number(value)), x, right(), cursorY);
         return cursorY + 11;
     }

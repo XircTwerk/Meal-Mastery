@@ -179,17 +179,17 @@ public final class OverviewPage extends BasePage {
         if (mostPrepared == null && mostEaten == null) {
             return cursorY;
         }
-        graphics.drawString(font(), Component.literal("Highlights"), columnX, cursorY,
+        graphics.drawString(font(), Component.translatable("mealmastery.overview.highlights"), columnX, cursorY,
                 JournalTheme.TEXT_ACCENT, false);
         JournalTheme.divider(graphics, columnX, cursorY + 10, right - columnX);
         cursorY += 16;
 
         if (mostPrepared != null) {
-            cursorY = dishRow(graphics, columnX, right, cursorY, "Most prepared",
+            cursorY = dishRow(graphics, columnX, right, cursorY, "mealmastery.records.most_prepared",
                     mostPrepared.target(), mostPrepared.prepared());
         }
         if (mostEaten != null) {
-            cursorY = dishRow(graphics, columnX, right, cursorY, "Most eaten",
+            cursorY = dishRow(graphics, columnX, right, cursorY, "mealmastery.records.most_eaten",
                     mostEaten.target(), mostEaten.eaten());
         }
         return cursorY;
@@ -268,7 +268,7 @@ public final class OverviewPage extends BasePage {
         if (cursorY + 16 > bottom()) {
             return cursorY;
         }
-        graphics.drawString(font(), Component.literal(label), columnX, cursorY,
+        graphics.drawString(font(), Component.translatable(label), columnX, cursorY,
                 JournalTheme.TEXT_DIM, false);
         cursorY += 11;
         graphics.renderFakeItem(JournalText.stackOf(dish), columnX, cursorY - 3);

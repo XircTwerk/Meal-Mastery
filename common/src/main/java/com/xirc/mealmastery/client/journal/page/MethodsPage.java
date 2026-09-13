@@ -57,11 +57,11 @@ public final class MethodsPage extends BasePage {
                 JournalTheme.TEXT_ACCENT, false);
 
         int rowY = cardY + 16;
-        row(graphics, cardX, cardWidth, rowY, "Recipes prepared",
+        row(graphics, cardX, cardWidth, rowY, "mealmastery.methods.prepared",
                 JournalText.number(method.preparations()));
-        row(graphics, cardX, cardWidth, rowY + 10, "Unique recipes",
+        row(graphics, cardX, cardWidth, rowY + 10, "mealmastery.methods.unique",
                 JournalText.number(method.uniqueMeals()));
-        row(graphics, cardX, cardWidth, rowY + 20, "Mastered recipes",
+        row(graphics, cardX, cardWidth, rowY + 20, "mealmastery.methods.mastered",
                 JournalText.number(method.masteredMeals()));
 
         if (method.mostPrepared() != null) {
@@ -72,7 +72,7 @@ public final class MethodsPage extends BasePage {
 
     private void row(GuiGraphics graphics, int cardX, int cardWidth, int rowY, String label,
                      String value) {
-        JournalTheme.row(graphics, font(), Component.literal(label), Component.literal(value),
+        JournalTheme.row(graphics, font(), Component.translatable(label), Component.literal(value),
                 cardX + 6, cardX + cardWidth - 6, rowY);
     }
 

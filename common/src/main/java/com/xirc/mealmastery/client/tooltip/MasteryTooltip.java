@@ -6,6 +6,7 @@ import com.xirc.mealmastery.config.ClientConfig;
 import com.xirc.mealmastery.config.ConfigManager;
 import com.xirc.mealmastery.network.Packets;
 import com.xirc.mealmastery.platform.Services;
+import com.xirc.mealmastery.compat.OptionalModCompatibility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -26,7 +27,8 @@ import java.util.List;
 public final class MasteryTooltip {
 
     private static final List<String> NUTRITION_PROVIDERS =
-            List.of("appleskin", "diet", "nutrition", "a_balanced_diet");
+            List.of("appleskin", "diet", "nutrition", "a_balanced_diet",
+                    OptionalModCompatibility.SPICE_OF_LIFE_VALHEIM);
 
     private MasteryTooltip() {
     }
@@ -148,7 +150,7 @@ public final class MasteryTooltip {
                     percent(rules.effectChance() * scale),
                     rules.effectSeconds()).withStyle(ChatFormatting.DARK_GRAY));
             float saturation = rules.saturationPerRank() * eatStars;
-            if (saturation > 0.0F) {
+            if (saturation > 0.0F && !OptionalModCompatibility.spiceOfLifeOwnsFoodStats()) {
                 lines.add(Component.translatable("mealmastery.tooltip.odds.saturation",
                         String.format("%.1f", saturation)).withStyle(ChatFormatting.DARK_GRAY));
             }

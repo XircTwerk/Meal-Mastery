@@ -82,7 +82,8 @@ public final class MealMasteryHud {
 
     private static void renderLevel(GuiGraphics graphics, int x, int y, int panelWidth) {
         Minecraft minecraft = Minecraft.getInstance();
-        Component label = Component.literal("Cooking Lv. " + ClientJournalState.cookingLevel());
+        Component label = Component.translatable("mealmastery.hud.level",
+                ClientJournalState.cookingLevel());
         graphics.drawString(minecraft.font, label, x, y, JournalTheme.TEXT, true);
 
         long into = ClientJournalState.xpIntoLevel();

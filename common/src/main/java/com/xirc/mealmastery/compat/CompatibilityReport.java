@@ -14,11 +14,12 @@ import java.util.Set;
  * What Meal Mastery can honestly say about the other mods present.
  *
  * <p>The wording matters. "Detected" means the mod is installed and Meal
- * Mastery reads its content directly. "Generic Support" means dishes from it
- * were picked up by the ordinary recipe scan with no integration code — which
- * is the normal case for a food addon. "Compatible" means the two coexist
- * without interfering. <b>"Full Compatibility" is never reported</b>, because
- * that would be a claim about testing rather than about detection.</p>
+ * Mastery reads its content directly. "Integrated" means a narrow compatibility
+ * hook is active. "Generic Support" means dishes from it were picked up by the
+ * ordinary recipe scan with no integration code — which is the normal case for
+ * a food addon. "Compatible" means the two coexist without interfering.
+ * <b>"Full Compatibility" is never reported</b>, because that would be a claim
+ * about testing rather than about detection.</p>
  */
 public final class CompatibilityReport {
 
@@ -27,6 +28,7 @@ public final class CompatibilityReport {
 
     public enum Status {
         DETECTED("detected"),
+        INTEGRATED("integrated"),
         GENERIC("generic"),
         COMPATIBLE("compatible"),
         ABSENT("absent");
@@ -52,7 +54,13 @@ public final class CompatibilityReport {
     /** Mods that overlap in behaviour and are checked for coexistence, not for content. */
     private static final List<String> COEXISTENCE = List.of(
             "jei", "roughlyenoughitems", "emi", "appleskin", "diet", "nutrition",
-            "a_balanced_diet", "pmmo", "projectmmo", "levelz");
+            "a_balanced_diet", "pmmo", "projectmmo", "levelz",
+            OptionalModCompatibility.SPICE_OF_LIFE_VALHEIM);
+
+    /** Mods with explicit event-based preparation tracking. */
+    private static final List<String> INTEGRATIONS = List.of(
+            OptionalModCompatibility.SOPHISTICATED_BACKPACKS,
+            OptionalModCompatibility.SOPHISTICATED_STORAGE);
 
     public static List<Line> build() {
         CulinaryRegistry registry = CulinaryRegistries.current();
@@ -76,6 +84,17 @@ public final class CompatibilityReport {
             lines.add(new Line(modId, Services.PLATFORM.modDisplayName(modId),
                     modId.equals("minecraft") ? Status.DETECTED : Status.GENERIC,
                     registry.byMod(modId).size()));
+        }
+
+        if ("NeoForge".equals(Services.PLATFORM.loaderName())) {
+            for (String modId : INTEGRATIONS) {
+                if (seen.contains(modId) || !Services.PLATFORM.isModLoaded(modId)) {
+                    continue;
+                }
+                seen.add(modId);
+                lines.add(new Line(modId, Services.PLATFORM.modDisplayName(modId),
+                        Status.INTEGRATED, 0));
+            }
         }
 
         for (String modId : COEXISTENCE) {

@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.SmokerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -295,6 +296,31 @@ public final class CookingTracker {
                     Set.copyOf(state.consumedIngredients()), false));
             return;
         }
+    }
+
+    /**
+     * Credits output from a menu that exposes an exact player-action event but
+     * cannot be observed through the vanilla inventory/menu layouts.
+     */
+    public static void onMenuPreparation(ServerPlayer player, ItemStack stack,
+                                         CookingMethod method,
+                                         Collection<ResourceLocation> usedIngredients) {
+        if (player == null || stack == null || stack.isEmpty()) {
+            return;
+        }
+        CulinaryRegistry registry = CulinaryRegistries.current();
+        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (itemId == null || !registry.isTracked(itemId) || !plausible(registry, itemId, method)) {
+            return;
+        }
+
+        PlayerTracking state = TRACKING.get(player.getUUID());
+        if (state != null) {
+            state.noteCredited(itemId, stack.getCount());
+        }
+        ProgressionService.credit(new CulinaryCredit(player, itemId, stack.getCount(), method,
+                CulinaryCredit.Source.MENU,
+                usedIngredients == null ? Set.of() : Set.copyOf(usedIngredients), false));
     }
 
     // --------------------------------------------------------------- settling

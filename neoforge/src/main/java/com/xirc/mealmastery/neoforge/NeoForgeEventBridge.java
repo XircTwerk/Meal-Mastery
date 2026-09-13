@@ -2,7 +2,12 @@ package com.xirc.mealmastery.neoforge;
 
 import com.xirc.mealmastery.Constants;
 import com.xirc.mealmastery.MealMasteryServer;
+import com.xirc.mealmastery.compat.OptionalModCompatibility;
 import com.xirc.mealmastery.event.CulinaryHooks;
+import com.xirc.mealmastery.recipe.CookingMethod;
+import com.xirc.mealmastery.recipe.CulinaryRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -17,6 +22,9 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * NeoForge's half of the loader bridge.
@@ -103,6 +111,46 @@ public final class NeoForgeEventBridge {
         if (event.getEntity() instanceof ServerPlayer player) {
             CulinaryHooks.onItemEaten(player, event.getItem().copy());
         }
+    }
+
+    /**
+     * Sophisticated crafting upgrades use a custom menu, but still emit the
+     * standard NeoForge crafting event for the player who took the result.
+     */
+    @SubscribeEvent
+    public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)
+                || !OptionalModCompatibility.isSophisticatedMenu(player.containerMenu)) {
+            return;
+        }
+        Set<ResourceLocation> ingredients = new LinkedHashSet<>();
+        var registry = CulinaryRegistries.current();
+        for (int slot = 0; slot < event.getInventory().getContainerSize(); slot++) {
+            var input = event.getInventory().getItem(slot);
+            if (input.isEmpty()) {
+                continue;
+            }
+            ResourceLocation inputId = BuiltInRegistries.ITEM.getKey(input.getItem());
+            if (inputId != null && registry.allIngredients().contains(inputId)) {
+                ingredients.add(inputId);
+            }
+        }
+        CulinaryHooks.onMenuPreparation(player, event.getCrafting(),
+                CookingMethod.CRAFTING, ingredients);
+    }
+
+    /** Manual smelting/smoking upgrades emit this when their output is taken. */
+    @SubscribeEvent
+    public static void onItemSmelted(PlayerEvent.ItemSmeltedEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)
+                || !OptionalModCompatibility.isSophisticatedMenu(player.containerMenu)) {
+            return;
+        }
+        var itemId = BuiltInRegistries.ITEM.getKey(event.getSmelting().getItem());
+        var entry = itemId == null ? null : CulinaryRegistries.current().entry(itemId);
+        CookingMethod method = entry != null && entry.usesMethod(CookingMethod.SMELTING)
+                ? CookingMethod.SMELTING : CookingMethod.SMOKING;
+        CulinaryHooks.onMenuPreparation(player, event.getSmelting(), method, Set.of());
     }
 
     @SubscribeEvent

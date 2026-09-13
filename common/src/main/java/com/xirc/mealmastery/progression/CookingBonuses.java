@@ -8,6 +8,8 @@ import com.xirc.mealmastery.culinary.MealStamp;
 import com.xirc.mealmastery.culinary.ProfileManager;
 import com.xirc.mealmastery.event.CulinaryEvents;
 import com.xirc.mealmastery.mastery.MasteryRank;
+import com.xirc.mealmastery.platform.Services;
+import com.xirc.mealmastery.compat.OptionalModCompatibility;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -128,12 +130,13 @@ public final class CookingBonuses {
      * to give, whereas saturation just makes it last longer.
      */
     private static void applySaturation(ServerPlayer player, float amount) {
-        if (amount <= 0.0F) {
+        if (amount <= 0.0F || OptionalModCompatibility.spiceOfLifeOwnsFoodStats()) {
             return;
         }
         FoodData food = player.getFoodData();
-        // Vanilla never lets saturation exceed the food level.
-        float capped = Math.min(food.getSaturationLevel() + amount, food.getFoodLevel());
+        float capped = Services.PLATFORM.isModLoaded("saturation_plus")
+                ? food.getSaturationLevel() + amount
+                : Math.min(food.getSaturationLevel() + amount, food.getFoodLevel());
         food.setSaturation(capped);
     }
 

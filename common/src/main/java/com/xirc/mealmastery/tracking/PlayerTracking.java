@@ -60,6 +60,7 @@ public final class PlayerTracking {
         this.baseline = baseline;
         creditedThisSession.clear();
         consumedIngredients.clear();
+        endWindow();
     }
 
     public void endMenuSession() {

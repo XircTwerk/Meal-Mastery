@@ -6,6 +6,25 @@ This is the **1.21.1** branch (Fabric + NeoForge). For Minecraft 1.20.1
 (Fabric + Forge) see the [`1.20.1`](https://github.com/XircTwerk/Meal-Mastery/tree/1.20.1)
 branch. There is no `main` branch: each Minecraft version is its own branch.
 
+## [1.1.3] - 2026-09-13
+
+### Fixed
+- Closing a Cooking Pot menu no longer leaves its interaction tracker active,
+  preventing repeated open/close cycles from granting cooking XP, mastery or
+  bonus dishes for items already in the player's inventory.
+- Meal Mastery's saturation bonus now respects Saturation Plus's raised cap
+  when that mod is installed.
+- HUD, overview highlights, method statistics and records labels can now be
+  translated through `lang` files.
+
+### Compatibility
+- Manual crafting, smelting and smoking performed through Sophisticated
+  Backpacks or Sophisticated Storage upgrades now grants Meal Mastery progress.
+  Automated upgrades remain uncredited because they have no responsible player.
+- When Spice of Life: Valheim Reforged is installed, Meal Mastery no longer
+  displays or applies its vanilla saturation bonus; recipe and consumption
+  tracking continue through the existing generic food support.
+
 ## [1.1.2] - 2026-08-09
 
 ### Added

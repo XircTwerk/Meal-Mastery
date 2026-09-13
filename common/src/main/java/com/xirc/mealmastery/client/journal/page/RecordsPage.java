@@ -42,17 +42,17 @@ public final class RecordsPage extends BasePage {
                 .max(Comparator.comparingLong(Packets.RecordView::eaten)).orElse(null);
 
         if (mostPrepared != null && mostPrepared.prepared() > 0L) {
-            cursorY = dishRow(graphics, cursorY, "Most prepared", mostPrepared.target(),
+            cursorY = dishRow(graphics, cursorY, "mealmastery.records.most_prepared", mostPrepared.target(),
                     mostPrepared.prepared());
         }
         if (mostEaten != null && mostEaten.eaten() > 0L) {
-            cursorY = dishRow(graphics, cursorY, "Most eaten", mostEaten.target(),
+            cursorY = dishRow(graphics, cursorY, "mealmastery.records.most_eaten", mostEaten.target(),
                     mostEaten.eaten());
         }
-        cursorY = row(graphics, cursorY, "Cooking streak",
-                ClientJournalState.cookingStreak() + " day(s)");
-        cursorY = row(graphics, cursorY, "Variety streak",
-                ClientJournalState.varietyStreak() + " dish(es)");
+        cursorY = row(graphics, cursorY, "mealmastery.records.cooking_streak",
+                Component.translatable("mealmastery.unit.days", ClientJournalState.cookingStreak()));
+        cursorY = row(graphics, cursorY, "mealmastery.records.variety_streak",
+                Component.translatable("mealmastery.unit.dishes", ClientJournalState.varietyStreak()));
 
         if (records.isEmpty()) {
             renderEmpty(graphics);
@@ -61,7 +61,7 @@ public final class RecordsPage extends BasePage {
 
         cursorY += 8;
         if (cursorY + 24 < bottom() && !ClientJournalState.milestones().isEmpty()) {
-            sectionTitle(graphics, Component.literal("Milestones"), cursorY);
+            sectionTitle(graphics, Component.translatable("mealmastery.records.milestones"), cursorY);
             cursorY += 14;
             for (ResourceLocation milestone : ClientJournalState.milestones()) {
                 if (cursorY + 11 > bottom()) {
@@ -80,7 +80,7 @@ public final class RecordsPage extends BasePage {
         if (cursorY + 14 > bottom()) {
             return cursorY;
         }
-        graphics.drawString(font(), Component.literal(label), x, cursorY,
+        graphics.drawString(font(), Component.translatable(label), x, cursorY,
                 JournalTheme.TEXT_DIM, false);
         graphics.renderFakeItem(JournalText.stackOf(dish), right() - 90, cursorY - 4);
         Component name = JournalText.nameOf(dish)
@@ -89,11 +89,11 @@ public final class RecordsPage extends BasePage {
         return cursorY + 14;
     }
 
-    private int row(GuiGraphics graphics, int cursorY, String label, String value) {
+    private int row(GuiGraphics graphics, int cursorY, String label, Component value) {
         if (cursorY + 10 > bottom()) {
             return cursorY;
         }
-        JournalTheme.row(graphics, font(), Component.literal(label), Component.literal(value),
+        JournalTheme.row(graphics, font(), Component.translatable(label), value,
                 x, right(), cursorY);
         return cursorY + 11;
     }
