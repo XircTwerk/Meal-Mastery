@@ -100,7 +100,8 @@ public final class ProgressionService {
 
         // Quality, perfect rolls, batch bonuses and tool perks all hang off the
         // preparation that just happened.
-        CookingRewards.onPrepared(player, profile, credit.meal(), credit.amount(), credit.method());
+        CookingRewards.onPrepared(player, profile, credit.meal(), credit.amount(), credit.method(),
+                credit.source() != CulinaryCredit.Source.DROP);
 
         profile.stats().addMealsPrepared(credit.amount());
         if (entry.category().id().getPath().equals("feast")) {

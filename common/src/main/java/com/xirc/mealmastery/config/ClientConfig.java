@@ -101,6 +101,14 @@ public final class ClientConfig {
         public boolean enabled = true;
         @Comment("Show full detail only while the modifier below is held.")
         public boolean requireModifier = true;
+        @Comment({
+                "What is still shown while the modifier is not held: the dish's star",
+                "rating, and the line reminding you which key reveals the rest.",
+                "",
+                "Turn both off and this mod adds nothing at all to a tooltip until the",
+                "modifier is pressed."})
+        public boolean collapsedShowRating = true;
+        public boolean collapsedShowHint = true;
         @Comment("SHIFT, CONTROL, ALT or NONE.")
         public Modifier modifier = Modifier.SHIFT;
         public boolean showMastery = true;

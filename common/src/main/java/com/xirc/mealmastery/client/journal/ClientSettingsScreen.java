@@ -31,6 +31,7 @@ public final class ClientSettingsScreen extends Screen {
 
     private final Screen parent;
     private final List<Toggle> toggles = new ArrayList<>();
+    private int toggleRows;
     private int frameX;
     private int frameY;
     private int frameWidth;
@@ -65,6 +66,12 @@ public final class ClientSettingsScreen extends Screen {
                 value -> config.notifications.masteryRanks = value));
         toggles.add(new Toggle(Component.literal("Level-up notifications"),
                 () -> config.notifications.levelUps, value -> config.notifications.levelUps = value));
+        toggles.add(new Toggle(Component.literal("Challenge notifications"),
+                () -> config.notifications.challenges,
+                value -> config.notifications.challenges = value));
+        toggles.add(new Toggle(Component.literal("Milestone notifications"),
+                () -> config.notifications.milestones,
+                value -> config.notifications.milestones = value));
         toggles.add(new Toggle(Component.literal("XP popups"),
                 () -> config.notifications.xpPopups, value -> config.notifications.xpPopups = value));
         toggles.add(new Toggle(Component.literal("Notification sounds"),
@@ -75,6 +82,12 @@ public final class ClientSettingsScreen extends Screen {
         toggles.add(new Toggle(Component.literal("Tooltips need modifier"),
                 () -> config.tooltips.requireModifier,
                 value -> config.tooltips.requireModifier = value));
+        toggles.add(new Toggle(Component.literal("Collapsed: show rating"),
+                () -> config.tooltips.collapsedShowRating,
+                value -> config.tooltips.collapsedShowRating = value));
+        toggles.add(new Toggle(Component.literal("Collapsed: show hint"),
+                () -> config.tooltips.collapsedShowHint,
+                value -> config.tooltips.collapsedShowHint = value));
         toggles.add(new Toggle(Component.literal("Show nutrition in tooltips"),
                 () -> config.tooltips.showNutrition, value -> config.tooltips.showNutrition = value));
         toggles.add(new Toggle(Component.literal("Cozy mode"),
@@ -86,9 +99,13 @@ public final class ClientSettingsScreen extends Screen {
                 () -> config.accessibility.reducedMotion,
                 value -> config.accessibility.reducedMotion = value));
 
-        int columns = frameWidth >= 360 ? 2 : 1;
+        // Two columns when there is width for them, and two regardless when a
+        // single column would run down into the buttons at the bottom.
+        int rowsAvailable = Math.max(1, (frameHeight - 28 - 48) / 15);
+        int columns = frameWidth >= 360 || toggles.size() > rowsAvailable ? 2 : 1;
         int buttonWidth = (frameWidth - 24 - (columns - 1) * 8) / columns;
         int rows = (toggles.size() + columns - 1) / columns;
+        toggleRows = rows;
 
         for (int index = 0; index < toggles.size(); index++) {
             Toggle toggle = toggles.get(index);
@@ -166,7 +183,7 @@ public final class ClientSettingsScreen extends Screen {
     private void renderCompatibility(GuiGraphics graphics) {
         List<CompatibilityReport.Line> lines = CompatibilityReport.build();
         int cursorY = frameY + frameHeight - 46;
-        int listTop = frameY + 28 + ((toggles.size() + 1) / 2) * 15 + 6;
+        int listTop = frameY + 28 + toggleRows * 15 + 6;
         if (listTop >= cursorY) {
             return;
         }

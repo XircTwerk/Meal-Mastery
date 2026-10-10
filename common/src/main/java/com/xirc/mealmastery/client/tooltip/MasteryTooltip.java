@@ -48,11 +48,18 @@ public final class MasteryTooltip {
         Packets.RecordView record = ClientJournalState.record(id);
         boolean discovered = record != null && record.discovered();
 
+        // Collapsed means the modifier is wanted and is not being held. What
+        // survives in that state is the player's to decide: the rating is the
+        // one line that describes how the food behaves, but a player who wants
+        // this mod out of the way until they ask for it can have that too.
+        boolean collapsed = config.tooltips.requireModifier && !modifierHeld(config);
+        boolean showRating = !collapsed || config.tooltips.collapsedShowRating;
+
         // A stamped stack describes itself: its quality belongs to whoever
         // cooked it, not to whoever is holding it.
         com.xirc.mealmastery.culinary.MealStamp stamp =
                 com.xirc.mealmastery.culinary.MealStamp.read(stack);
-        if (stamp != null && stamp.isMeaningful()) {
+        if (showRating && stamp != null && stamp.isMeaningful()) {
             if (stamp.perfect()) {
                 lines.add(Component.translatable("mealmastery.tooltip.perfect")
                         .withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.BOLD));
@@ -68,7 +75,7 @@ public final class MasteryTooltip {
         // Stars sit directly under the name, always visible: they are the one
         // piece of Meal Mastery information that changes how the food behaves,
         // so hiding them behind a modifier would hide the mechanic itself.
-        if (stamp == null && config.journal.showStars && discovered
+        if (showRating && stamp == null && config.journal.showStars && discovered
                 && ClientJournalState.rank(id).ordinal() > 0) {
             lines.add(Component.literal(JournalText.stars(id))
                     .withStyle(ChatFormatting.GOLD)
@@ -76,10 +83,12 @@ public final class MasteryTooltip {
                             .withStyle(ChatFormatting.DARK_GRAY)));
         }
 
-        if (config.tooltips.requireModifier && !modifierHeld(config)) {
-            lines.add(Component.translatable("mealmastery.tooltip.hint",
-                            modifierName(config))
-                    .withStyle(ChatFormatting.DARK_GRAY));
+        if (collapsed) {
+            if (config.tooltips.collapsedShowHint) {
+                lines.add(Component.translatable("mealmastery.tooltip.hint",
+                                modifierName(config))
+                        .withStyle(ChatFormatting.DARK_GRAY));
+            }
             if (!discovered && config.journal.showNewIndicator) {
                 lines.add(Component.translatable("mealmastery.tooltip.new")
                         .withStyle(ChatFormatting.GOLD));
