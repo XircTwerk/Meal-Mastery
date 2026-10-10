@@ -1,7 +1,7 @@
 # Per-file upload settings
 
 Four jars, one per branch/loader combination. The 1.20.1 files are version
-`1.0.2`; the 1.21.1 files are version `1.1.4`.
+`1.0.3`; the 1.21.1 files are version `1.1.4`.
 
 Values below come from `gradle.properties` on each branch. Do not widen a
 version range here that the jar metadata does not declare.
@@ -13,12 +13,12 @@ version range here that the jar metadata does not declare.
 | | |
 |---|---|
 | Branch | `1.20.1` |
-| Jar | `fabric/build/libs/mealmastery-fabric-1.20.1-1.0.2.jar` |
+| Jar | `fabric/build/libs/mealmastery-fabric-1.20.1-1.0.3.jar` |
 | Minecraft version | 1.20.1 |
 | Mod loader | Fabric |
 | Java | 17 |
 | Release channel | Release |
-| Display name | Meal Mastery 1.0.2 — 1.20.1 Fabric |
+| Display name | Meal Mastery 1.0.3 — 1.20.1 Fabric |
 
 Dependencies:
 
@@ -34,12 +34,12 @@ Dependencies:
 | | |
 |---|---|
 | Branch | `1.20.1` |
-| Jar | `forge/build/libs/mealmastery-forge-1.20.1-1.0.2.jar` |
+| Jar | `forge/build/libs/mealmastery-forge-1.20.1-1.0.3.jar` |
 | Minecraft version | 1.20.1 |
 | Mod loader | Forge |
 | Java | 17 |
 | Release channel | Release |
-| Display name | Meal Mastery 1.0.2 — 1.20.1 Forge |
+| Display name | Meal Mastery 1.0.3 — 1.20.1 Forge |
 
 Dependencies:
 
