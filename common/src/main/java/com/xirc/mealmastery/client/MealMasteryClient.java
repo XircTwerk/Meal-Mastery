@@ -9,7 +9,6 @@ import com.xirc.mealmastery.network.Packets;
 import com.xirc.mealmastery.platform.Services;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -24,16 +23,6 @@ import net.minecraft.sounds.SoundSource;
  * player allows.</p>
  */
 public final class MealMasteryClient {
-
-    /**
-     * Meal Mastery's own toast slot.
-     *
-     * <p>1.21 turned SystemToastId from an enum into an instantiable class, so
-     * the mod can have an id of its own instead of borrowing a vanilla one.
-     * Reusing a single id means a new notification replaces the previous one
-     * rather than stacking a backlog down the screen.</p>
-     */
-    private static final SystemToast.SystemToastId TOAST_ID = new SystemToast.SystemToastId();
 
     private static long pendingXp;
     private static int xpTimer;
@@ -138,8 +127,14 @@ public final class MealMasteryClient {
         Component subtitle = notify.subject() == null
                 ? Component.empty() : JournalText.nameOf(notify.subject());
 
-        // SystemToast is vanilla's own widget, so no texture is added.
-        minecraft.getToasts().addToast(new SystemToast(TOAST_ID, title, subtitle));
+        // Replace the toast already on screen rather than queueing behind it.
+        MealMasteryToast showing = minecraft.getToasts()
+                .getToast(MealMasteryToast.class, MealMasteryToast.TOKEN);
+        if (showing != null) {
+            showing.reset(title, subtitle);
+        } else {
+            minecraft.getToasts().addToast(new MealMasteryToast(title, subtitle));
+        }
 
         if (config.notifications.playSounds && minecraft.player != null) {
             // An existing vanilla sound; no custom audio asset.

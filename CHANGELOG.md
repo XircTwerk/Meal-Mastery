@@ -6,6 +6,51 @@ This is the **1.21.1** branch (Fabric + NeoForge). For Minecraft 1.20.1
 (Fabric + Forge) see the [`1.20.1`](https://github.com/XircTwerk/Meal-Mastery/tree/1.20.1)
 branch. There is no `main` branch: each Minecraft version is its own branch.
 
+## [1.1.4] - 2026-10-10
+
+### Fixed
+- Putting a cooked dish into a Cooking Pot's ingredient grid and taking it
+  straight back out is no longer treated as cooking it again. It paid out
+  Cooking XP, pushed the dish's prepared count and star rating up, and
+  eventually handed over a free second portion through the extra-portion roll.
+  Food sitting in any workstation's input slots now counts as food the player
+  is still carrying, so moving it in and out is worth nothing. Taking a
+  finished dish out of a workstation is still credited exactly as before.
+  (#2)
+- Cooked food fragments into stacks that will not merge far less often. Rating
+  a batch used to split the stack it landed in, so cooking three more into a
+  pile of twenty left seventeen in one slot and three in another, permanently
+  unmergeable — and a pile cooked into repeatedly fragmented further every
+  time. A rating is now only written onto a stack that the batch accounts for
+  in full.
+- Food produced by a cutting board no longer causes a rating to be written onto
+  an unrelated stack. The board drops its result on the floor, so there was
+  nothing in the inventory to rate; the mod rated whatever matching food the
+  player happened to be carrying instead, which is why identical dishes
+  sometimes refused to stack.
+- Meal Mastery notifications no longer crash the game alongside Fancy Notify.
+  The mod announced itself through a vanilla system toast carrying an identity
+  it had made up, and a mod that recognises system toasts by vanilla's own set
+  had nothing to match it against. Meal Mastery now draws its own toast, using
+  the same vanilla sprite and layout, and adds no texture of its own. (#3)
+- The settings screen no longer runs its toggles down into the buttons below
+  them when there are enough of them to fill the panel.
+
+### Added
+- `mastery.bonuses.stampFood`, on by default. Turn it off and no rating is ever
+  written onto food, so every stack merges the way vanilla intends. Eating
+  bonuses then follow the eater's own mastery with the dish rather than the
+  cook's — for your own cooking that is the same number — and cooking for other
+  people stops earning mastery.
+- Challenge and milestone notifications can be turned off in the settings
+  screen. Both already existed in the config file, but the screen had no
+  button for either, so turning off a popup meant editing the file by hand.
+  (#3)
+- `tooltips.collapsedShowRating` and `tooltips.collapsedShowHint`, both on by
+  default and both in the settings screen. They control what is left on a
+  tooltip while the modifier is not held: turn both off and Meal Mastery adds
+  nothing at all until the modifier is pressed. (#1)
+
 ## [1.1.3] - 2026-09-13
 
 ### Fixed

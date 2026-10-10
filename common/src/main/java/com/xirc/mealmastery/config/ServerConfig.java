@@ -233,6 +233,19 @@ public final class ServerConfig {
 
         @Comment("Mastery points the cook earns when someone else eats their cooking.")
         public int masteryPerMealServedToOthers = 2;
+
+        @Comment({
+                "Writes the cook's star rating onto the food itself. That is what lets",
+                "a chef's cooking be better for whoever they hand it to, and what pays",
+                "the cook when somebody else eats it.",
+                "",
+                "It costs stacking. Food carrying different ratings does not merge, so",
+                "a pile built up as you improve can end up sitting in several stacks.",
+                "Turn this off for vanilla stacking everywhere: eating bonuses then",
+                "follow the eater's own mastery with the dish instead of the cook's,",
+                "which for your own cooking is the same number, and cooking for other",
+                "people stops earning mastery."})
+        public boolean stampFood = true;
     }
 
     @Comment("When a dish stops being a mystery in the journal.")

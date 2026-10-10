@@ -31,11 +31,17 @@ public final class CookingRewards {
     /**
      * Stamps freshly cooked food and rolls the extras.
      *
-     * @param amount how many were produced
+     * @param amount        how many were produced
+     * @param intoInventory whether the output landed in the player's inventory.
+     *                      A cutting board drops its result on the floor
+     *                      instead, and scanning the inventory for it only ever
+     *                      found whatever matching food the player already
+     *                      happened to be carrying
      * @return the number of bonus portions granted, so the caller can rebaseline
      */
     public static int onPrepared(ServerPlayer player, CulinaryProfile profile,
-                                 ResourceLocation meal, int amount, CookingMethod method) {
+                                 ResourceLocation meal, int amount, CookingMethod method,
+                                 boolean intoInventory) {
         ServerConfig config = ConfigManager.server();
         ServerConfig.Bonuses bonuses = config.mastery.bonuses;
         if (!bonuses.enabled || !config.mastery.enabled) {
@@ -47,9 +53,11 @@ public final class CookingRewards {
                 && player.getRandom().nextDouble()
                 < bonuses.perfectChanceAtMaxRank * stars / MasteryRank.highestIndex();
 
-        MealStamp stamp = new MealStamp(stars, perfect, player.getUUID(),
-                player.getGameProfile().getName());
-        if (stamp.isMeaningful()) {
+        MealStamp stamp = bonuses.stampFood
+                ? new MealStamp(stars, perfect, player.getUUID(),
+                        player.getGameProfile().getName())
+                : null;
+        if (intoInventory && stamp != null && stamp.isMeaningful()) {
             stampFresh(player, meal, amount, stamp);
         }
 
@@ -77,10 +85,21 @@ public final class CookingRewards {
     /**
      * Writes the stamp onto the portions that were just produced.
      *
-     * <p>Only unstamped stacks are touched, and only up to {@code amount}
-     * items, so food already sitting in the inventory is not retroactively
-     * relabelled. A partial stack is split so a batch of ten does not become
-     * ten perfect portions.</p>
+     * <p>Whole stacks only. The old version split a stack so that exactly the
+     * batch size carried the rating, which guaranteed a leftover: cook three
+     * more into a pile of twenty and the pile became seventeen unstamped plus
+     * three stamped, in two slots that would never merge again. Players saw
+     * food that refused to stack for no visible reason, and a pile they kept
+     * cooking into fragmented a little further every time.</p>
+     *
+     * <p>So a stack is stamped only when this batch accounts for all of it. A
+     * larger stack is left alone rather than split or relabelled wholesale:
+     * relabelling would hand the rating to food the player cooked long ago, and
+     * splitting is the bug. The batch then merges into that pile unstamped,
+     * which costs nothing a player can feel — eating unstamped food falls back
+     * to their own mastery with the dish, and that is the same number they just
+     * cooked it at. The rating only has to survive on food that leaves their
+     * hands, and that food is a fresh stack.</p>
      */
     private static void stampFresh(ServerPlayer player, ResourceLocation meal, int amount,
                                    MealStamp stamp) {
@@ -96,40 +115,24 @@ public final class CookingRewards {
             if (stack.isEmpty() || stack.getItem() != item || MealStamp.isStamped(stack)) {
                 continue;
             }
-            if (stack.getCount() <= remaining) {
-                stamp.write(stack);
-                remaining -= stack.getCount();
+            if (stack.getCount() > remaining) {
                 continue;
             }
-            // Split: only the newly cooked portion carries the stamp. Placed
-            // straight into a free slot rather than handed to Inventory#add,
-            // which other mods hook as a pickup - synthesising one in the
-            // middle of a craft invites them to react to it twice.
-            int free = inventory.getFreeSlot();
-            if (free < 0) {
-                // Nowhere to put it. Leaving the stack unstamped costs the
-                // player a star on this batch; inventing an item movement
-                // could cost them the items.
-                break;
-            }
-            ItemStack stamped = stack.copy();
-            stamped.setCount(remaining);
-            stamp.write(stamped);
-            stack.shrink(remaining);
-            inventory.setItem(free, stamped);
-            remaining = 0;
+            stamp.write(stack);
+            remaining -= stack.getCount();
         }
         consolidate(inventory, item);
     }
 
     /**
-     * Merges stacks that ended up split by stamping.
+     * Merges stacks that now carry the same stamp.
      *
      * <p>Vanilla merges on insert, and at that moment a freshly cooked portion
      * is still unstamped while the stack already in the slot is stamped — so it
      * refuses to merge and takes a new slot, then gets stamped a moment later.
      * The result is a row of identical one-item stacks. This pass runs
-     * afterwards and merges anything that now matches.</p>
+     * afterwards and merges anything that matches, which also tidies up piles
+     * left fragmented by earlier versions.</p>
      */
     private static void consolidate(Inventory inventory, Item item) {
         for (int target = 0; target < inventory.getContainerSize(); target++) {
@@ -177,7 +180,7 @@ public final class CookingRewards {
             return 0;
         }
         ItemStack bonus = new ItemStack(item, 1);
-        if (stamp.isMeaningful()) {
+        if (stamp != null && stamp.isMeaningful()) {
             stamp.write(bonus);
         }
         if (!player.getInventory().add(bonus)) {
